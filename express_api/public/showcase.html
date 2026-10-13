@@ -71,40 +71,6 @@
       gap: 8px;
     }
 
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .nav-cta-btn {
-      background: #111111;
-      border: 1px solid #111111;
-      color: #ffffff;
-      font-size: 13px;
-      font-family: inherit;
-      cursor: pointer;
-      padding: 9px 20px;
-      border-radius: 6px;
-      font-weight: 500;
-      letter-spacing: -0.01em;
-      text-decoration: none;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-      transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-cta-btn:hover {
-      background: #000000;
-      color: #ffffff;
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-    }
-    .nav-cta-btn:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-    }
 
     /* ---- HERO SECTION PRINCIPALE (PLEIN ÉCRAN ÉPURÉ) ---- */
     .hero-container {
@@ -159,82 +125,101 @@
       margin: 0 auto 40px auto;
     }
 
-    /* BOUTONS HERO CALL TO ACTION HAUTE COUTURE */
+    /* ---- BOUTONS DU HERO (HIÉRARCHIE INVERSÉE : DÉMO PRIMARY / ACCÈS SECONDARY) ---- */
     .hero-cta-wrapper {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
       margin-bottom: 24px;
     }
-    .btn-hero-access {
+
+    /* 1. BOUTON PRIMARY : VOIR LA DÉMONSTRATION (FOND NOIR PROFOND) */
+    .btn-hero-primary {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       background: #000000;
       color: #ffffff;
-      padding: 18px 40px;
+      padding: 16px 34px;
+      height: 52px;
       border-radius: 6px;
       border: 1px solid #000000;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 600;
       font-family: inherit;
       letter-spacing: -0.015em;
       cursor: pointer;
       text-decoration: none;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      box-sizing: border-box;
+      line-height: 1;
     }
-    .btn-hero-access:hover {
+    .btn-hero-primary:hover {
       background: #111111;
       transform: translateY(-2px);
       box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.22), 0 6px 12px -2px rgba(0, 0, 0, 0.08);
     }
-    .btn-hero-access:active {
+    .btn-hero-primary:active {
       transform: translateY(0);
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
-    .btn-arrow {
+    .btn-play-icon {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
       display: inline-block;
-      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-      font-size: 17px;
-      line-height: 1;
+      transition: transform 0.25s ease;
     }
-    .btn-hero-access:hover .btn-arrow,
-    .nav-cta-btn:hover .btn-arrow {
-      transform: translateX(5px);
+    .btn-hero-primary:hover .btn-play-icon {
+      transform: scale(1.1);
     }
 
-    .btn-launch {
+    /* 2. BOUTON SECONDARY : ACCÉDER À L'APPLICATION (FOND BLANC PUR & BORDURE FINE) */
+    .btn-hero-secondary {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
       background: #ffffff;
-      color: #111111;
-      padding: 17px 30px;
+      color: #000000;
+      padding: 16px 34px;
+      height: 52px;
       border-radius: 6px;
       border: 1px solid #e5e7eb;
       font-size: 14.5px;
       font-weight: 500;
-      letter-spacing: -0.01em;
+      font-family: inherit;
+      letter-spacing: -0.015em;
       cursor: pointer;
       text-decoration: none;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      box-sizing: border-box;
+      line-height: 1;
     }
-    .btn-launch:hover {
-      background: #f8fafc;
+    .btn-hero-secondary:hover {
+      background: #f9fafb;
       border-color: #d1d5db;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.08);
+      color: #000000;
     }
-    .btn-launch svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
+    .btn-hero-secondary:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+    .btn-arrow {
+      display: inline-block;
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 16px;
+      line-height: 1;
+    }
+    .btn-hero-secondary:hover .btn-arrow {
+      transform: translateX(5px);
     }
 
     /* SIGNATURE BAS DE PAGE DISCRÈTE */
@@ -267,12 +252,6 @@
     <a href="/showcase.html" class="brand-mark">
       Cannelle et Piment
     </a>
-    <nav class="nav-actions">
-      <a href="/index.html?app=1" class="nav-cta-btn">
-        <span>Accéder à l'application</span>
-        <span class="btn-arrow">&rarr;</span>
-      </a>
-    </nav>
   </header>
 
   <!-- ========== HERO SECTION ULTRA-PREMIUM ========== -->
@@ -287,15 +266,15 @@
 
     <!-- CALL TO ACTION DUO LUXE -->
     <div class="hero-cta-wrapper">
-      <a href="/index.html?app=1" class="btn-hero-access">
-        <span>Accéder à l'application</span>
-        <span class="btn-arrow">&rarr;</span>
-      </a>
-      <a href="/index.html?autodemo=1" class="btn-launch" id="btn-open-demo" aria-label="Voir la démonstration automatique">
-        <svg viewBox="0 0 24 24">
+      <a href="/index.html?autodemo=1" class="btn-hero-primary" id="btn-open-demo" aria-label="Voir la démonstration automatique">
+        <svg viewBox="0 0 24 24" class="btn-play-icon">
           <path d="M8 5v14l11-7z"/>
         </svg>
         <span>Voir la démonstration</span>
+      </a>
+      <a href="/index.html?app=1" class="btn-hero-secondary">
+        <span>Accéder à l'application</span>
+        <span class="btn-arrow">&rarr;</span>
       </a>
     </div>
 
