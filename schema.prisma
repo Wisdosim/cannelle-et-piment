@@ -1,0 +1,287 @@
+// ============================================================================
+// PRISMA SCHEMA - CANNELLE ET PIMENT
+// Description: Schéma ORM de référence pour les bases de données relationnelles
+// ============================================================================
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. Énumération stricte pour les catégories d'articles
+enum Categorie {
+  PRODUITS_LAITIERS     @map("Produits laitiers")
+  VIANDES_ET_VOLAILLES  @map("Viandes et Volailles")
+  POISSONS_ET_CRUSTACES @map("Poissons et Crustacés")
+  EPICERIE_ET_SEC       @map("Épicerie et Sec")
+  FRUITS_ET_LEGUMES     @map("Fruits et Légumes")
+  BOISSONS              @map("Boissons")
+  SPIRITUEUX            @map("Spiritueux")
+}
+
+// 2. Modèle Article (Fiche Ingredient)
+model Article {
+  id                  String             @id @default(uuid())
+  nom                 String             @unique
+  categorie           Categorie
+  uniteAchat          String             @map("unite_achat")
+  uniteRecette        String             @map("unite_recette")
+  facteurConversion   Float              @default(1.0) @map("facteur_conversion") // ratio entre l'achat et la recette
+  uniteBase           String             @map("unite_base") // ex: Kg, L
+  prixUnitaireBase    Float              @default(0.0) @map("prix_unitaire_base") // prix calculé au kg/L
+  prixAchatUnitaire   Float              @default(0.0) @map("prix_achat_unitaire")
+  
+  // Relations
+  stock               Stock?
+  inventaires         InventaireMensuel[]
+  achats              AchatFacture[]
+  ficheLignes         FicheTechniqueLigne[]
+  
+  creeLe              DateTime           @default(now()) @map("cree_le")
+  misAJourLe          DateTime           @updatedAt @map("mis_a_jour_le")
+
+  @@map("articles")
+}
+
+// 3. Modèle Stock (Quantité théorique)
+model Stock {
+  id                      String    @id @default(uuid())
+  articleId               String    @unique @map("article_id")
+  quantiteActuelle        Float     @default(0.0) @map("quantite_actuelle")
+  dateDerniereMiseAJour   DateTime  @default(now()) @updatedAt @map("date_derniere_mise_a_jour")
+  zoneStockageId          String?   @map("zone_stockage_id")
+
+  // Relations
+  article                 Article   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  zoneStockage            ZoneStockage? @relation(fields: [zoneStockageId], references: [id], onDelete: SetNull)
+
+  @@map("stocks")
+}
+
+// 4. Modèle Inventaire Mensuel (Ajustement physique mensuel)
+model InventaireMensuel {
+  id                    String    @id @default(uuid())
+  dateInventaire        DateTime  @map("date_inventaire")
+  articleId             String    @map("article_id")
+  quantiteReelle        Float     @map("quantite_reelle")
+  ecartStock            Float     @map("ecart_stock") // quantite_reelle - stock.quantite_actuelle
+  valeurFinanciereStock Float     @map("valeur_financiere_stock") // quantite_reelle * article.prix_achat_unitaire
+  creeLe                DateTime  @default(now()) @map("cree_le")
+
+  // Relations
+  article               Article   @relation(fields: [articleId], references: [id], onDelete: Restrict)
+
+  @@map("inventaires_mensuels")
+}
+
+// 5. Énumération stricte pour les rôles de la main d'œuvre
+enum Role {
+  COMMIS        @map("Commis")
+  SERVEUR       @map("Serveur")
+  ADMINISTRATIF @map("Administratif")
+  LIVREUR       @map("Livreur")
+}
+
+// 6. Modèle EmployeOuProfil (Comptabilité analytique de la main d'œuvre)
+model EmployeOuProfil {
+  id                String   @id @default(uuid())
+  nomOuType         String   @unique @map("nom_ou_type") // ex. "Jean Dupont" ou "Extra Commis"
+  role              Role
+  coutHoraireCharge Float    @map("cout_horaire_charge") // coût réel chargé pour l'entreprise
+  
+  tempsTravail      TempsTravailEvenement[]
+
+  creeLe            DateTime @default(now()) @map("cree_le")
+  misAJourLe        DateTime @updatedAt @map("mis_a_jour_le")
+
+  @@map("employes_ou_profils")
+}
+
+// 7. Modèle AchatFacture (Enregistrement d'achat facturé)
+model AchatFacture {
+  id                  String   @id @default(uuid())
+  articleId           String   @map("article_id")
+  prixTotalLigne      Float    @map("prix_total_ligne")
+  quantiteAchetee     Float    @map("quantite_achetee")
+  uniteAchat          String   @map("unite_achat")
+  poidsReelUniteBase  Float    @map("poids_reel_unite_base") // ex. Poids total acheté en unité de base (Kg, L)
+  creeLe              DateTime @default(now()) @map("cree_le")
+
+  // Relations
+  article             Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@map("achats_factures")
+}
+
+// 8. Modèle ZoneStockage (Espaces d'entreposage)
+model ZoneStockage {
+  id          String   @id @default(uuid())
+  nom         String   @unique
+  description String?
+  stocks      Stock[]
+
+  creeLe      DateTime @default(now()) @map("cree_le")
+  misAJourLe  DateTime @updatedAt @map("mis_a_jour_le")
+
+  @@map("zones_stockage")
+}
+
+// 9. Énumération stricte pour les catégories de plats
+enum CategoriePlat {
+  ENTREE    @map("Entree")
+  PLAT      @map("Plat")
+  DESSERT   @map("Dessert")
+  COCKTAIL  @map("Cocktail")
+  BUFFET    @map("Buffet")
+}
+
+// 10. Modèle FicheTechnique (Recette de cuisine)
+model FicheTechnique {
+  id              String                @id @default(uuid())
+  nomRecette      String                @unique @map("nom_recette")
+  categoriePlat   CategoriePlat         @map("categorie_plat")
+  
+  // Relations
+  lignes          FicheTechniqueLigne[]
+  devisLignes     DevisLigneRecette[]
+
+  creeLe          DateTime              @default(now()) @map("cree_le")
+  misAJourLe      DateTime              @updatedAt @map("mis_a_jour_le")
+
+  @@map("fiches_techniques")
+}
+
+// 11. Modèle FicheTechniqueLigne (Ingrédients nécessaires pour une recette)
+model FicheTechniqueLigne {
+  id                            String          @id @default(uuid())
+  ficheTechniqueId              String          @map("fiche_technique_id")
+  articleId                     String          @map("article_id")
+  quantiteNecessaireUniteBase   Float           @map("quantite_necessaire_unite_base") // ex. 0.150 Kg
+
+  // Relations
+  ficheTechnique                FicheTechnique  @relation(fields: [ficheTechniqueId], references: [id], onDelete: Cascade)
+  article                       Article         @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@map("fiche_technique_lignes")
+}
+
+// 12. Modèle EvenementDevis — Moteur de calcul de coût de revient
+model EvenementDevis {
+  id                        String                  @id @default(uuid())
+  nomClient                 String                  @map("nom_client")
+  dateEvenement             DateTime                @map("date_evenement")
+  chiffreAffairesSaisi      Float                   @default(0.0) @map("chiffre_affaires_saisi") // CA saisi manuellement pour déduire la marge
+  chiffreAffairesSaisiPrevu Float                   @default(0.0) @map("chiffre_affaires_saisi_prevu")
+  chiffreAffairesSaisiReel  Float                   @default(0.0) @map("chiffre_affaires_saisi_reel")
+  status                    String                  @default("Brouillon") // Valeurs : Brouillon, Envoye, Valide_Acompte, Termine
+
+  // Relations
+  devisLignes           DevisLigneRecette[]
+  tempsTravail          TempsTravailEvenement[]
+  fraisExternes         FraisExterne[]
+  analyseRentabilite    AnalyseRentabilite?
+
+  creeLe                DateTime                @default(now()) @map("cree_le")
+  misAJourLe            DateTime                @updatedAt @map("mis_a_jour_le")
+
+  @@map("evenements_devis")
+}
+
+// 13. Modèle DevisLigneRecette (Recette affectée à un devis d'événement)
+model DevisLigneRecette {
+  id                  String          @id @default(uuid())
+  evenementDevisId    String          @map("evenement_devis_id")
+  ficheTechniqueId    String          @map("fiche_technique_id")
+  nombrePortions      Int             @map("nombre_portions") // nombre de personnes
+  prixUnitaireFige    Float           @default(0.0) @map("prix_unitaire_fige")
+
+  // Relations
+  evenementDevis      EvenementDevis  @relation(fields: [evenementDevisId], references: [id], onDelete: Cascade)
+  ficheTechnique      FicheTechnique  @relation(fields: [ficheTechniqueId], references: [id], onDelete: Cascade)
+
+  @@map("devis_ligne_recettes")
+}
+
+// 14. Modèle TempsTravailEvenement (Main d'œuvre directe affectée à un événement)
+model TempsTravailEvenement {
+  id                      String          @id @default(uuid())
+  evenementDevisId        String          @map("evenement_devis_id")
+  employeId               String          @map("employe_id")
+  heuresEffectueesCuisine Float           @map("heures_effectuees_cuisine")
+  prixUnitaireFige        Float           @default(0.0) @map("prix_unitaire_fige")
+  coutTotalMainOeuvre     Float           @map("cout_total_main_oeuvre") // calculé automatiquement
+
+  // Relations
+  evenementDevis          EvenementDevis  @relation(fields: [evenementDevisId], references: [id], onDelete: Cascade)
+  employe                 EmployeOuProfil @relation(fields: [employeId], references: [id], onDelete: Cascade)
+
+  creeLe                  DateTime        @default(now()) @map("cree_le")
+  misAJourLe              DateTime        @updatedAt @map("mis_a_jour_le")
+
+  @@map("temps_travail_evenements")
+}
+
+// 15. Modèle FraisExterne (Frais directs logistiques, etc.)
+model FraisExterne {
+  id                      String          @id @default(uuid())
+  evenementDevisId        String          @map("evenement_devis_id")
+  categorie               String          // ex: Location vaisselle
+  montantHT               Float           @map("montant_ht")
+
+  // Relations
+  evenementDevis          EvenementDevis  @relation(fields: [evenementDevisId], references: [id], onDelete: Cascade)
+
+  creeLe                  DateTime        @default(now()) @map("cree_le")
+  misAJourLe              DateTime        @updatedAt @map("mis_a_jour_le")
+
+  @@map("frais_externes")
+}
+
+// 16. Modèle AnalyseRentabilite (Consolidateur analytique pour graphiques)
+model AnalyseRentabilite {
+  id                      String          @id @default(uuid())
+  evenementDevisId        String          @unique @map("evenement_devis_id")
+  totalCoutMatiere        Float           @map("total_cout_matiere")
+  totalMainOeuvreDirecte  Float           @map("total_main_oeuvre_directe")
+  totalFraisExternes      Float           @map("total_frais_externes")
+  margeBruteHT            Float           @map("marge_brute_ht")             // CA Saisi - Coûts directs totaux
+  quotePartFraisFixes     Float           @default(0.0) @map("quote_part_frais_fixes")
+  tauxPerteForfaitaire    Float           @default(5.0) @map("taux_perte_forfaitaire") // Taux global par défaut
+  tauxPerteSaisi          Float?          @map("taux_perte_saisi")            // Taux saisi manuellement par événement (prioritaire)
+  coutPerteAlimentaire    Float           @default(0.0) @map("cout_perte_alimentaire")
+  margeNetteHT            Float           @default(0.0) @map("marge_nette_ht")
+  coutRevientParConvive   Float           @default(0.0) @map("cout_revient_par_convive")
+
+  // Nouveaux champs prévus et réels
+  coutMatierePrevu        Float           @default(0.0) @map("cout_matiere_prevu")
+  coutMatiereReel         Float           @default(0.0) @map("cout_matiere_reel")
+  coutMainOeuvrePrevu     Float           @default(0.0) @map("cout_main_oeuvre_prevu")
+  coutMainOeuvreReel      Float           @default(0.0) @map("cout_main_oeuvre_reel")
+
+  // Relations
+  evenementDevis          EvenementDevis  @relation(fields: [evenementDevisId], references: [id], onDelete: Cascade)
+
+  creeLe                  DateTime        @default(now()) @map("cree_le")
+  misAJourLe              DateTime        @updatedAt @map("mis_a_jour_le")
+
+  @@map("analyses_rentabilite")
+}
+
+// 17. Modèle ExplicationCalcul (Traçabilité et audit des calculs analytiques)
+model ExplicationCalcul {
+  id                  String   @id @default(uuid())
+  entiteConcernee     String   @map("entite_concernee")     // ex: "Devis #12"
+  nomIndicateur       String   @map("nom_indicateur")       // ex: "Marge Nette"
+  formuleLitterale    String   @map("formule_litterale")    // Formule explicative en clair
+  variablesUtilisees  String   @map("variables_utilisees")  // Valeurs exactes au format JSON (stringifié)
+
+  creeLe              DateTime @default(now()) @map("cree_le")
+  misAJourLe          DateTime @updatedAt @map("mis_a_jour_le")
+
+  @@map("explications_calculs")
+}
+

@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cannelle et Piment — Moteur Analytique & Devis Traiteur</title>
+  <meta name="description" content="Plateforme de comptabilité analytique et de calcul de rentabilité événementielle pour le traiteur Cannelle et Piment. Méthode TDABC et conformité EGAlim.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+  <script src="/mockData.js"></script>
+  <style>
+    /* ============================================================
+       DESIGN SYSTEM — FINTECH ENTERPRISE LIGHT THEME
+       Inspiration : Stripe / Linear / Bloomberg
+       Palette claire, haute densité, bordures ultra-fines, anti-slop
+    ============================================================ */
+    :root {
+      --bg:             #f8fafc; /* Slate 50 */
+      --surface:        #ffffff;
+      --surface-card:   #ffffff;
+      --surface-hover:  #f1f5f9; /* Slate 100 */
+      --surface-input:  #ffffff;
+
+      --border:         #e2e8f0; /* Slate 200 */
+      --border-subtle:  #f1f5f9;
+      --border-strong:  #cbd5e1; /* Slate 300 */
+      --border-focus:   #2563eb; /* Blue 600 */
+
+      --text:           #0f172a; /* Slate 900 */
+      --text-muted:     #475569; /* Slate 600 */
+      --text-dim:       #94a3b8; /* Slate 400 */
+
+      --accent:         #2563eb; /* Blue 600 */
+      --accent-hover:   #1d4ed8; /* Blue 700 */
+      --accent-soft:    #eff6ff; /* Blue 50 */
+      --accent-border:  #bfdbfe; /* Blue 200 */
+
+      --success:        #059669; /* Emerald 600 */
+      --success-soft:   #ecfdf5; /* Emerald 50 */
+      --success-border: #a7f3d0; /* Emerald 200 */
+
+      --warning:        #d97706; /* Amber 600 */
+      --warning-soft:   #fffbeb; /* Amber 50 */
+      --warning-border: #fde68a; /* Amber 200 */
+
+      --danger:         #dc2626; /* Red 600 */
+      --danger-soft:    #fef2f2; /* Red 50 */
+      --danger-border:  #fecaca; /* Red 200 */
+
+      --rse-bio:        #059669;
+      --rse-local:      #0284c7;
+      --rse-label:      #d97706;
+      --rse-std:        #64748b;
+
+      --radius:         3px;
+      --radius-sm:      2px;
+      --shadow-subtle:  0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+
+      --font:           'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono:      'Roboto Mono', 'SF Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ---- BANNIÈRE MODE DÉMO ---- */
+    #demo-banner {
+      display: none;
+      background: var(--accent-soft);
+      border-bottom: 1px solid var(--accent-border);
+      color: #1e40af;
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 7px 24px;
+      align-items: center;
+      justify-content: space-between;
+      letter-spacing: 0.01em;
+    }
+    #demo-banner.active { display: flex; }
+    .demo-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #1d4ed8;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }
+    .demo-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #2563eb; box-shadow: 0 0 5px rgba(37, 99, 235, 0.6);
+    }
+    .demo-link {
+      color: var(--accent);
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+    .demo-link:hover { color: var(--accent-hover); }
+
+    /* ---- HEADER ---- */
+    .app-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      height: 54px;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+    }
+    .brand-block {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .app-logo {
+      font-size: 13.5px; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .app-logo .tag-corp {
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 10px; font-family: var(--font-mono);
+      padding: 2px 6px; border-radius: var(--radius-sm);
+      letter-spacing: 0.04em; font-weight: 500;
+    }
+    .header-actions {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    /* ---- NAVIGATION TABS ---- */
+    .nav-tabs {
+      display: flex; gap: 2px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2px;
+    }
+    .nav-tab {
+      padding: 6px 14px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all 120ms ease;
+    }
+    .nav-tab:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .nav-tab.active {
+      background: #ffffff;
+      color: var(--text);
+      font-weight: 600;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    /* ---- LAYOUT ---- */
+    .app-layout {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ---- VIEWS ---- */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ---- PAGE HEADINGS ---- */
+    .view-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 20px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-title {
+      font-size: 18px; font-weight: 700; letter-spacing: -0.01em; color: var(--text);
+    }
+    .page-subtitle {
+      color: var(--text-muted); font-size: 12.5px; margin-top: 3px;
+    }
+
+    /* ---- GRID & CARD SYSTEM ---- */
+    .devis-layout {
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 20px;
+      align-items: start;
+    }
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-subtle);
+    }
+    .card:last-child { margin-bottom: 0; }
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+    /* ---- FORMS & INPUTS ---- */
+    .form-group {
+      display: flex; flex-direction: column; gap: 5px;
+      margin-bottom: 12px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
+    }
+    .form-input, .form-select {
+      background: var(--surface-input);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 12.5px;
+      padding: 7px 10px;
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color 120ms ease, box-shadow 120ms ease;
+      width: 100%;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+    }
+    .form-input[type="number"], .form-input[type="date"] {
+      font-family: var(--font-mono);
+    }
+
+    /* ---- SLIDER ---- */
+    .slider-wrapper {
+      display: flex; align-items: center; gap: 14px;
+    }
+    input[type="range"] {
+      flex: 1;
+      height: 5px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    .slider-value {
+      font-family: var(--font-mono);
+      font-size: 15px; font-weight: 700;
+      color: var(--text); min-width: 44px; text-align: right;
+    }
+
+    /* ---- BUTTONS ---- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px;
+      padding: 7px 14px;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 120ms ease;
+      white-space: nowrap;
+    }
+    .btn-sm { padding: 4px 10px; font-size: 11px; }
+    .btn-lg { padding: 9px 18px; font-size: 13px; font-weight: 600; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+      border-color: #94a3b8;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border-color: var(--border);
+    }
+    .btn-ghost:hover {
+      color: var(--text);
+      background: var(--surface-hover);
+      border-color: var(--border-strong);
+    }
+    .btn-danger {
+      background: #ffffff;
+      color: var(--danger);
+      border-color: var(--danger-border);
+    }
+    .btn-danger:hover {
+      background: var(--danger-soft);
+    }
+
+    /* ---- RESULT PANEL (STICKY SIDEBAR) ---- */
+    .result-panel {
+      position: sticky; top: 74px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow-subtle);
+    }
+    .kpi-metric-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .kpi-metric-box.highlight {
+      border-color: var(--accent-border);
+      background: var(--accent-soft);
+    }
+    .kpi-metric-label {
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .kpi-metric-val {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .kpi-metric-box.highlight .kpi-metric-val {
+      color: #1d4ed8;
+    }
+    .kpi-metric-sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+    }
+    .breakdown-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+    .breakdown-table tr:last-child { border-bottom: none; }
+    .breakdown-table td {
+      padding: 6px 0;
+      font-size: 11.5px;
+    }
+    .breakdown-table td.lbl {
+      color: var(--text-muted);
+    }
+    .breakdown-table td.val {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text);
+    }
+    .breakdown-table td.val-accent {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ---- DISH PICKER LIST ---- */
+    .dish-item {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 6px;
+      transition: border-color 120ms ease;
+    }
+    .dish-item:hover { border-color: var(--border-strong); }
+    .dish-item-name {
+      font-weight: 600; font-size: 12.5px; color: var(--text);
+    }
+    .dish-item-meta {
+      font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);
+      margin-top: 1px;
+    }
+    .dish-item-price {
+      font-family: var(--font-mono);
+      font-size: 13px; font-weight: 700; color: var(--text);
+    }
+    .dish-qty-group {
+      display: flex; align-items: center;
+      background: #ffffff;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+    }
+    .dish-qty-btn {
+      width: 24px; height: 24px;
+      background: transparent; border: none;
+      color: var(--text); cursor: pointer;
+      font-size: 13px; font-family: var(--font-mono);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dish-qty-btn:hover { background: var(--surface-hover); }
+    .dish-qty-val {
+      min-width: 28px; text-align: center;
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    }
+
+    /* ---- RSE & EGALIM SECTION ---- */
+    .rse-box {
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      margin-top: 14px;
+    }
+    .rse-donut-container {
+      display: flex; align-items: center; gap: 16px;
+      margin: 10px 0;
+    }
+    .rse-donut {
+      width: 76px; height: 76px; border-radius: 50%;
+      position: relative; flex-shrink: 0;
+      background: var(--border);
+      transition: background 250ms ease;
+    }
+    .rse-donut-hole {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #ffffff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .rse-donut-score {
+      font-family: var(--font-mono);
+      font-size: 14px; font-weight: 700; color: var(--text);
+    }
+    .rse-donut-lbl {
+      font-size: 8px; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    .rse-legend {
+      flex: 1; display: flex; flex-direction: column; gap: 4px;
+    }
+    .rse-legend-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11.5px; color: var(--text-muted);
+    }
+    .rse-legend-item {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .rse-dot {
+      width: 7px; height: 7px; border-radius: 1px; flex-shrink: 0;
+    }
+    .rse-val {
+      font-family: var(--font-mono); font-weight: 600; color: var(--text);
+    }
+
+    .egalim-badge {
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      font-size: 11.5px;
+      font-weight: 500;
+      text-align: center;
+      letter-spacing: 0.01em;
+      margin-top: 10px;
+    }
+    .egalim-ok {
+      background: var(--success-soft);
+      border: 1px solid var(--success-border);
+      color: #065f46;
+    }
+    .egalim-warn {
+      background: var(--warning-soft);
+      border: 1px solid var(--warning-border);
+      color: #92400e;
+    }
+    .egalim-fail {
+      background: var(--danger-soft);
+      border: 1px solid var(--danger-border);
+      color: #991b1b;
+    }
+
+    /* ---- DATA TABLES ---- */
+    .table-container {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      box-shadow: var(--shadow-subtle);
+    }
+    .data-table {
+      width: 100%; border-collapse: collapse; text-align: left;
+    }
+    .data-table th {
+      background: #f8fafc;
+      padding: 10px 14px;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12.5px;
+      color: var(--text);
+    }
+    .data-table tr:hover td {
+      background: #f8fafc;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* ---- STATUS BADGES ---- */
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 7px; border-radius: var(--radius-sm);
+      font-size: 10.5px; font-weight: 600; letter-spacing: 0.03em;
+      font-family: var(--font-mono); text-transform: uppercase;
+      border: 1px solid transparent;
+    }
+    .badge-bio   { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+    .badge-local { background: #f0f9ff; color: #0369a1; border-color: #bae6fd; }
+    .badge-label { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+    .badge-std   { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+    .badge-category {
+      background: #f8fafc; color: var(--text-muted);
+      border-color: var(--border-strong);
+    }
+
+    /* ---- SAVED EVENT CARDS ---- */
+    .event-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-subtle);
+      transition: border-color 120ms ease;
+    }
+    .event-card:hover { border-color: var(--border-strong); }
+    .event-card-main { flex: 1; }
+    .event-card-title {
+      font-size: 13.5px; font-weight: 600; color: var(--text);
+    }
+    .event-card-meta {
+      font-size: 11.5px; color: var(--text-muted); margin-top: 2px;
+      font-family: var(--font-mono);
+    }
+    .event-card-kpis {
+      display: flex; gap: 24px; text-align: right;
+    }
+    .event-kpi-item { display: flex; flex-direction: column; }
+    .event-kpi-val {
+      font-family: var(--font-mono); font-size: 13.5px; font-weight: 700; color: var(--text);
+    }
+    .event-kpi-lbl {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted); margin-top: 1px;
+    }
+
+    /* ---- MODALS ---- */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(2px);
+      display: none; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #ffffff;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      padding: 22px;
+      width: 100%; max-width: 540px;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 18px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title {
+      font-size: 14.5px; font-weight: 700; color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .modal-close {
+      background: none; border: none; color: var(--text-dim);
+      font-size: 20px; cursor: pointer; padding: 2px 6px;
+      line-height: 1; transition: color .15s;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    /* ---- INGREDIENT LINE EDITOR ---- */
+    .ingredient-line {
+      display: grid; grid-template-columns: 1fr 100px 90px auto;
+      gap: 8px; align-items: center; margin-bottom: 8px;
+    }
+    .ingredient-line-cost {
+      font-family: var(--font-mono); font-size: 11.5px;
+      color: var(--text-muted); text-align: right; font-weight: 500;
+    }
+
+    /* ---- EMPTY STATE ---- */
+    .empty-state {
+      text-align: center; padding: 36px 16px;
+      color: var(--text-muted);
+    }
+    .empty-state-title {
+      font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 4px;
+    }
+    .empty-state-sub { font-size: 12px; }
+
+    /* ---- TOAST NOTIFICATIONS ---- */
+    #toast-container {
+      position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      background: #ffffff;
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      font-size: 12.5px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      min-width: 270px;
+      animation: toastIn 180ms ease;
+    }
+    .toast-success { border-left: 4px solid var(--success); }
+    .toast-error   { border-left: 4px solid var(--danger); }
+    .toast-warning { border-left: 4px solid var(--warning); }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 980px) {
+      .devis-layout { grid-template-columns: 1fr; }
+      .result-panel { position: static; }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .app-header { padding: 0 14px; height: auto; flex-wrap: wrap; gap: 10px; padding-top: 10px; padding-bottom: 10px; }
+      .app-layout { padding: 14px; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .nav-tabs { width: 100%; overflow-x: auto; }
+      .event-card { flex-direction: column; align-items: flex-start; }
+      .event-card-kpis { width: 100%; justify-content: space-between; }
+    }
+    /* ---- LANDING PAGE HERO OVERLAY (MODE VITRINE INITIAL) ---- */
+    .landing-hero-overlay {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      color: #000000;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 32px;
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+    .landing-hero-overlay.dismissed {
+      opacity: 0;
+      transform: translateY(-24px);
+      pointer-events: none;
+    }
+    .hero-top-nav {
+      width: 100%;
+      max-width: 1100px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eaeaea;
+    }
+    .hero-brand-mark {
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #000000;
+    }
+    .hero-nav-btn {
+      background: transparent;
+      border: none;
+      color: #555555;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 4px;
+      transition: color 150ms ease;
+      font-weight: 400;
+    }
+    .hero-nav-btn:hover {
+      color: #000000;
+    }
+    .hero-center-content {
+      text-align: center;
+      max-width: 900px;
+      padding: 60px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: auto 0;
+    }
+    .hero-badge {
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #888888;
+      margin-bottom: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-badge::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #000000;
+    }
+    .hero-headline {
+      font-size: clamp(40px, 6.5vw, 78px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: #000000;
+      margin-bottom: 24px;
+    }
+    .hero-subheadline {
+      font-size: clamp(15px, 2vw, 19px);
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      line-height: 1.55;
+      color: #555555;
+      max-width: 620px;
+      margin: 0 auto 38px auto;
+    }
+    .btn-launch-hero {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #000000;
+      color: #ffffff;
+      padding: 15px 34px;
+      border-radius: 4px;
+      border: 1px solid #000000;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-launch-hero:hover {
+      background: #1a1a1a;
+      transform: translateY(-1px);
+    }
+    .btn-launch-hero svg {
+      width: 13px;
+      height: 13px;
+      fill: currentColor;
+    }
+    .hero-footer-bar {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 0;
+      font-size: 11.5px;
+      color: #888888;
+      border-top: 1px solid #eaeaea;
+    }
+
+    /* ---- PULSE ANIMATION POUR LE CALCUL DE RENTABILITÉ ---- */
+    @keyframes kpiHighlightPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.15);
+        transform: scale(1.015);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+        transform: scale(1);
+      }
+    }
+    .kpi-metric-box.kpi-pulse, .result-panel.kpi-pulse {
+      animation: kpiHighlightPulse 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== LANDING PAGE HERO (MODE VITRINE INITIAL) ========== -->
+  <div id="landing-hero-overlay" class="landing-hero-overlay">
+    <header class="hero-top-nav">
+      <div class="hero-brand-mark">
+        Cannelle et Piment
+      </div>
+      <nav class="hero-nav-actions">
+        <button type="button" class="hero-nav-btn" onclick="skipToApp()">
+          Accéder directement à l'application &rarr;
+        </button>
+      </nav>
+    </header>
+
+    <div class="hero-center-content">
+      <div class="hero-badge">
+        Intelligence Analytique Traiteur
+      </div>
+      <h1 class="hero-headline">
+        Le Contrôle de Gestion,<br>Réinventé.
+      </h1>
+      <p class="hero-subheadline">
+        L'ingénierie financière au service de la gastronomie événementielle. Méthode TDABC, coûts unitaires et optimisation des marges en temps réel.
+      </p>
+      <div>
+        <button type="button" class="btn-launch-hero" id="btn-hero-launch-demo" onclick="startAutoDemoFromHero()">
+          <svg viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <span>Voir la démonstration</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-footer-bar">
+      <span>Système de pilotage conçu par Nassim El Aziz</span>
+      <span>Méthode TDABC &bull; Conformité EGAlim</span>
+    </div>
+  </div>
+
+  <!-- ========== BANNIÈRE MODE DÉMO ========== -->
+  <div id="demo-banner" class="active">
+    <div class="demo-pill">
+      <span class="demo-dot"></span>
+      <span>Showroom Portfolio &mdash; Moteur Analytique (Données Simulées en Mémoire Locale)</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <a href="/showcase.html" class="demo-link">Présentation &amp; Analyse Financière</a>
+      <span class="demo-link" onclick="startTour()">Lancer la Visite Guidée (Tour DAF)</span>
+      <span class="demo-link" onclick="resetToDefaultSeed()" style="color:#d97706;font-weight:600;">Réinitialiser Données Démo</span>
+    </div>
+  </div>
+
+  <!-- ========== APPLICATION HEADER ========== -->
+  <header class="app-header">
+    <div class="brand-block">
+      <div class="app-logo">
+        Cannelle et Piment
+        <span class="tag-corp">Moteur Analytique v2.0</span>
+      </div>
+    </div>
+
+    <!-- MAIN TABS -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" onclick="switchView('devis')" id="tab-devis" role="tab">Nouveau Devis</button>
+      <button class="nav-tab" onclick="switchView('history')" id="tab-history" role="tab">Historique Devis</button>
+      <button class="nav-tab" onclick="switchView('recettes')" id="tab-recettes" role="tab">Fiches Recettes</button>
+      <button class="nav-tab" onclick="switchView('ingredients')" id="tab-ingredients" role="tab">Articles &amp; RSE</button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" onclick="showLandingHero()" title="Afficher la Landing Page de présentation">
+        Présentation Vitrine
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="startTour()" title="Visite guidée pour Directeurs Financiers">
+        Tour Guidé DAF
+      </button>
+      <a href="/showcase.html" class="btn btn-secondary btn-sm">
+        Vue d'Ensemble
+      </a>
+    </div>
+  </header>
+
+  <!-- ========== MAIN APPLICATION CONTAINER ========== -->
+  <main class="app-layout">
+
+    <!-- ============================================================
+         VIEW 1 — NOUVEAU DEVIS ANALYTIQUE
+    ============================================================ -->
+    <div class="view active" id="view-devis">
+      <div class="view-header">
+        <div>
+          <h1 class="page-title">Calculateur de Rentabilité &amp; Devis Événementiel</h1>
+          <p class="page-subtitle">Modélisation de prix par la méthode TDABC &mdash; Chiffrage matière, marge prévisionnelle et conformité EGAlim</p>
+        </div>
+      </div>
+
+      <div class="devis-layout">
+
+        <!-- GAUCHE : FORMULAIRE DE PARAMÉTRAGE -->
+        <div>
+
+          <!-- 1. IDENTIFICATION CLIENT -->
+          <div class="card" id="tour-card-client">
+            <div class="card-title">Paramètres de l'Événement</div>
+            <div class="grid-3">
+              <div class="form-group">
+                <label class="form-label" for="dv-client">Nom Client / Référence Dossier</label>
+                <input class="form-input" type="text" id="dv-client" placeholder="ex: Cabinet Lemercier & Associés — Séminaire Annuel">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="dv-date">Date de Réalisation</label>
+                <input class="form-input" type="date" id="dv-date">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="dv-couverts">Volume Convives (Couverts)</label>
+                <input class="form-input" type="number" id="dv-couverts" min="1" value="50" oninput="calcDevis()">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. MARGE CIBLE STRATÉGIQUE -->
+          <div class="card" id="tour-card-marge">
+            <div class="card-title">
+              <span>Objectif de Marge Brute Cible</span>
+              <span class="mono" style="color:var(--text-muted);font-size:11px;">Benchmark Traiteur : 60% &ndash; 75%</span>
+            </div>
+            <div class="slider-wrapper">
+              <input type="range" id="dv-marge" min="10" max="90" value="65" step="1" oninput="onMargeChange()">
+              <div class="slider-value" id="dv-marge-display">65%</div>
+            </div>
+          </div>
+
+          <!-- 3. COMPOSITION DU MENU / SÉLECTION RECETTES -->
+          <div class="card" id="tour-card-dishes">
+            <div class="card-title">
+              <span>Nomenclature &amp; Fiches Techniques Associées</span>
+              <button class="btn btn-primary btn-sm" onclick="openDishPicker()">+ Ajouter une Recette</button>
+            </div>
+            <div id="dishes-list">
+              <div class="empty-state">
+                <div class="empty-state-title">Aucune prestation sélectionnée</div>
+                <div class="empty-state-sub">Cliquez sur "+ Ajouter une Recette" pour modéliser le coût matière du menu.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. FRAIS DIRECTS ADDITIONNELS -->
+          <div class="card">
+            <div class="card-title">Frais Directs Spécifiques (Hors Matière)</div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label class="form-label" for="dv-frais-label">Libellé Frais Spécifique</label>
+                <input class="form-input" type="text" id="dv-frais-label" placeholder="ex: Location véhicule frigorifique &amp; Arts de la table">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="dv-frais-montant">Montant Forfaitaire HT (€)</label>
+                <input class="form-input" type="number" step="0.01" id="dv-frais-montant" placeholder="0.00" oninput="calcDevis()">
+              </div>
+            </div>
+          </div>
+
+          <!-- ACTIONS FORMULAIRE -->
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+            <button class="btn btn-ghost" onclick="resetDevis()">Réinitialiser Saisie</button>
+            <button type="button" class="btn btn-secondary" id="btn-calc-rentabilite" onclick="calcDevis(); highlightKpis();">Calculer la rentabilité</button>
+            <button class="btn btn-primary btn-lg" onclick="saveDevis()">Enregistrer le Devis en Base</button>
+          </div>
+
+        </div>
+
+        <!-- DROITE : PANNEAU DES RÉSULTATS ANALYTIQUES (STICKY) -->
+        <aside class="result-panel" id="result-panel">
+          <div class="card-title" style="margin-bottom:12px;">Synthèse Prévisionnelle en Temps Réel</div>
+
+          <!-- KPI 1 : PRIX CONSEILLÉ -->
+          <div class="kpi-metric-box highlight">
+            <div class="kpi-metric-label">Prix de Vente Conseillé / Convive</div>
+            <div class="kpi-metric-val" id="res-prix-couvert">&mdash; €</div>
+            <div class="kpi-metric-sub" id="res-prix-total-sub">Chiffre d'Affaires Total : &mdash; €</div>
+          </div>
+
+          <!-- KPI 2 : COÛT MATIÈRE -->
+          <div class="kpi-metric-box">
+            <div class="kpi-metric-label">Coût Matière Direct / Convive</div>
+            <div class="kpi-metric-val" id="res-cout-couvert">&mdash; €</div>
+            <div class="kpi-metric-sub" id="res-cout-total-sub">Coût Revient Total : &mdash; €</div>
+          </div>
+
+          <!-- TABLE DE DÉCOMPOSITION FINANCIÈRE -->
+          <table class="breakdown-table">
+            <tbody>
+              <tr>
+                <td class="lbl">Consommation Matières HT</td>
+                <td class="val" id="res-detail-mat">&mdash; €</td>
+              </tr>
+              <tr>
+                <td class="lbl">Frais Directs Additionnels</td>
+                <td class="val" id="res-detail-frais">0.00 €</td>
+              </tr>
+              <tr>
+                <td class="lbl">Coût de Revient Direct Total</td>
+                <td class="val" id="res-detail-total">&mdash; €</td>
+              </tr>
+              <tr>
+                <td class="lbl">Marge Brute Dégagée (€)</td>
+                <td class="val val-accent" id="res-marge-eur">&mdash; €</td>
+              </tr>
+              <tr>
+                <td class="lbl">Taux de Marge Brute Rétrocalculé</td>
+                <td class="val val-accent" id="res-marge-pct">&mdash; %</td>
+              </tr>
+              <tr>
+                <td class="lbl">Coefficient Multiplicateur Vente</td>
+                <td class="val" id="res-coeff">&times;&mdash;</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- SECTION CONFORMITÉ RSE / EGALIM -->
+          <div class="rse-box" id="tour-card-rse">
+            <div class="card-title" style="margin-bottom:6px;">Indice RSE &amp; Ratio Durabilité (EGAlim)</div>
+
+            <div class="rse-donut-container">
+              <div class="rse-donut" id="rse-donut">
+                <div class="rse-donut-hole">
+                  <span class="rse-donut-score" id="rse-score-pct">&mdash;</span>
+                  <span class="rse-donut-lbl">EGAlim</span>
+                </div>
+              </div>
+
+              <div class="rse-legend">
+                <div class="rse-legend-row">
+                  <span class="rse-legend-item"><span class="rse-dot" style="background:var(--rse-bio)"></span>Bio</span>
+                  <span class="rse-val" id="rse-pct-bio">0%</span>
+                </div>
+                <div class="rse-legend-row">
+                  <span class="rse-legend-item"><span class="rse-dot" style="background:var(--rse-local)"></span>Circuit Court</span>
+                  <span class="rse-val" id="rse-pct-local">0%</span>
+                </div>
+                <div class="rse-legend-row">
+                  <span class="rse-legend-item"><span class="rse-dot" style="background:var(--rse-label)"></span>Labellisé (SIQO)</span>
+                  <span class="rse-val" id="rse-pct-label">0%</span>
+                </div>
+                <div class="rse-legend-row">
+                  <span class="rse-legend-item"><span class="rse-dot" style="background:var(--rse-std)"></span>Standard</span>
+                  <span class="rse-val" id="rse-pct-std">100%</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="egalim-badge" class="egalim-badge egalim-warn">
+              Sélectionnez des recettes pour évaluer le score EGAlim
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW 2 — HISTORIQUE DES DEVIS
+    ============================================================ -->
+    <div class="view" id="view-history">
+      <div class="view-header">
+        <div>
+          <h1 class="page-title">Portefeuille d'Événements &amp; Devis Consolidés</h1>
+          <p class="page-subtitle">Historique des chiffrages avec marges réelles et volumes convives enregistrés</p>
+        </div>
+        <button class="btn btn-primary" onclick="switchView('devis')">+ Nouveau Devis</button>
+      </div>
+
+      <div id="devis-history-list">
+        <div class="empty-state">
+          <div class="empty-state-title">Chargement des événements...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW 3 — FICHES TECHNIQUES / RECETTES
+    ============================================================ -->
+    <div class="view" id="view-recettes">
+      <div class="view-header">
+        <div>
+          <h1 class="page-title">Répertoire des Fiches Techniques Culinaires</h1>
+          <p class="page-subtitle">Nomenclature des préparations, décomposition unitaire et valorisation standard par portion</p>
+        </div>
+        <button class="btn btn-primary" onclick="openRecipeModal()">+ Nouvelle Fiche Technique</button>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table" id="recettes-table">
+          <thead>
+            <tr>
+              <th>Désignation Recette</th>
+              <th>Catégorie Gamme</th>
+              <th>Composition Ingrédients</th>
+              <th style="text-align:right;">Coût Portions (€)</th>
+              <th style="text-align:right;">Ratio EGAlim</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="recettes-tbody">
+            <tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-muted);">Chargement des fiches techniques...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW 4 — ARTICLES & CATALOGUE INGRÉDIENTS
+    ============================================================ -->
+    <div class="view" id="view-ingredients">
+      <div class="view-header">
+        <div>
+          <h1 class="page-title">Mercuriale Ingrédients &amp; Données RSE</h1>
+          <p class="page-subtitle">Base d'approvisionnement des denrées &mdash; Prix unitaires de base et classifications durables</p>
+        </div>
+        <button class="btn btn-primary" onclick="openIngredientModal()">+ Nouvel Article Mercuriale</button>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Article / Ingrédient</th>
+              <th>Catégorie Marchandise</th>
+              <th style="text-align:right;">Prix Base (€/Unité)</th>
+              <th>Unité Référence</th>
+              <th>Filière RSE</th>
+              <th>Classification SIQO</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ingredients-tbody">
+            <tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-muted);">Chargement de la mercuriale...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       MODAL 1 — SÉLECTEUR DE RECETTE (DISH PICKER)
+  ============================================================ -->
+  <div class="modal-overlay" id="modal-dish-picker">
+    <div class="modal" style="max-width:440px;">
+      <div class="modal-header">
+        <span class="modal-title">Sélectionner une Préparation Culinaire</span>
+        <button class="modal-close" onclick="closeModal('modal-dish-picker')">&times;</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="picker-recette">Fiche Technique Associée</label>
+        <select class="form-select" id="picker-recette">
+          <option value="">&mdash; Choisir une recette de la base &mdash;</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="picker-qty">Nombre de Portions Prévues</label>
+        <input class="form-input" type="number" id="picker-qty" min="1" value="1">
+      </div>
+
+      <div id="picker-preview" style="display:none;background:#f8fafc;border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-top:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:600;font-size:13px;color:var(--text);" id="picker-prev-name">&mdash;</div>
+            <div style="font-size:11px;color:var(--text-muted);" id="picker-prev-ing">0 composants</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="mono" style="font-weight:700;color:var(--accent);font-size:14px;" id="picker-prev-cost">0.00 €/portion</div>
+            <div id="picker-prev-badge" style="margin-top:2px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;">
+        <button class="btn btn-ghost" onclick="closeModal('modal-dish-picker')">Annuler</button>
+        <button class="btn btn-primary" onclick="addDish()">Ajouter au Devis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 2 — GESTION FICHE TECHNIQUE
+  ============================================================ -->
+  <div class="modal-overlay" id="modal-recipe">
+    <div class="modal" style="max-width:600px;">
+      <div class="modal-header">
+        <span class="modal-title" id="recipe-modal-title">Nouvelle Fiche Technique</span>
+        <button class="modal-close" onclick="closeModal('modal-recipe')">&times;</button>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="recipe-nom">Dénomination de la Préparation</label>
+          <input class="form-input" type="text" id="recipe-nom" placeholder="ex: Cœur de Filet de Bœuf Rossini">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="recipe-cat">Catégorie Menu</label>
+          <select class="form-select" id="recipe-cat">
+            <option value="ENTREE">Entrée</option>
+            <option value="PLAT">Plat Principal</option>
+            <option value="DESSERT">Dessert</option>
+            <option value="COCKTAIL">Cocktail &amp; Pièces</option>
+            <option value="BUFFET">Buffet &amp; Ateliers</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px 0;padding-top:12px;border-top:1px solid var(--border);">
+        <span class="card-title" style="margin:0;">Nomenclature des Ingrédients (par portion)</span>
+        <button class="btn btn-secondary btn-sm" onclick="addIngredientLine()">+ Ligne Ingrédient</button>
+      </div>
+
+      <div id="recipe-lines" style="max-height:260px;overflow-y:auto;padding-right:4px;"></div>
+      <div id="recipe-cost-preview" class="mono" style="font-size:12px;font-weight:600;color:var(--accent);margin-top:8px;text-align:right;"></div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;">
+        <button class="btn btn-ghost" onclick="closeModal('modal-recipe')">Annuler</button>
+        <button class="btn btn-primary" onclick="saveRecipe()" id="recipe-save-btn">Enregistrer</button>
+      </div>
+      <input type="hidden" id="recipe-edit-id">
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3 — GESTION ARTICLE MERCURIALE
+  ============================================================ -->
+  <div class="modal-overlay" id="modal-ingredient">
+    <div class="modal" style="max-width:560px;">
+      <div class="modal-header">
+        <span class="modal-title" id="ing-modal-title">Fiche Article Mercuriale</span>
+        <button class="modal-close" onclick="closeModal('modal-ingredient')">&times;</button>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="ing-nom">Libellé Ingrédient</label>
+          <input class="form-input" type="text" id="ing-nom" placeholder="ex: Filet de Bœuf Limousin Label Rouge">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ing-cat">Catégorie Comptable</label>
+          <select class="form-select" id="ing-cat">
+            <option value="VIANDES_ET_VOLAILLES">Viandes et Volailles</option>
+            <option value="POISSONS_ET_CRUSTACES">Poissons et Crustacés</option>
+            <option value="PRODUITS_LAITIERS">Produits Laitiers</option>
+            <option value="FRUITS_ET_LEGUMES">Fruits et Légumes</option>
+            <option value="EPICERIE_ET_SEC">Épicerie &amp; Sec</option>
+            <option value="BOISSONS">Boissons Softs</option>
+            <option value="SPIRITUEUX">Vins &amp; Spiritueux</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="form-group">
+          <label class="form-label" for="ing-prix">Prix Référence Base (€)</label>
+          <input class="form-input" type="number" step="0.01" id="ing-prix" placeholder="38.50">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ing-unite-base">Unité Recette (Base)</label>
+          <input class="form-input" type="text" id="ing-unite-base" placeholder="Kg / L">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ing-unite-achat">Unité Conditionnement Achat</label>
+          <input class="form-input" type="text" id="ing-unite-achat" placeholder="Kg / Carton">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label" for="ing-famille-rse">Filière Approvisionnement</label>
+          <select class="form-select" id="ing-famille-rse">
+            <option value="">&mdash; Non définie &mdash;</option>
+            <option value="Viandes et Volailles">Viandes et Volailles</option>
+            <option value="Poissons et Crustacés">Poissons et Crustacés</option>
+            <option value="Produits laitiers">Produits laitiers</option>
+            <option value="Fruits et Légumes">Fruits et Légumes</option>
+            <option value="Épicerie et Sec">Épicerie et Sec</option>
+            <option value="Boissons">Boissons</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ing-classif-rse">Classification Qualité SIQO</label>
+          <select class="form-select" id="ing-classif-rse">
+            <option value="">Standard / Conventionnel</option>
+            <option value="Bio">Agriculture Biologique (AB)</option>
+            <option value="Local">Production Régionale &lt; 150 km</option>
+            <option value="Labellisé (AOP/AOC...)">AOP / AOC / Label Rouge</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;">
+        <button class="btn btn-ghost" onclick="closeModal('modal-ingredient')">Annuler</button>
+        <button class="btn btn-primary" onclick="saveIngredient()" id="ing-save-btn">Enregistrer</button>
+      </div>
+      <input type="hidden" id="ing-edit-id">
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- DRIVER.JS TOUR -->
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.iife.js"></script>
+
+  <!-- ============================================================
+       APPLICATION LOGIC & DATA ENGINE
+  ============================================================ -->
+  <script>
+  'use strict';
+
+  // ---- ÉTAT GLOBAL & STORE LOCAL (SHOWROOM MODE ZÉRO-BDD) ----
+  let dbArticles = [];
+  let dbRecettes = [];
+  let devisPlats = []; // [{ recette, quantite }]
+
+  function getLocalStore() {
+    const data = localStorage.getItem('cp_mock_store');
+    if (data) {
+      try { return JSON.parse(data); } catch (e) {}
+    }
+    const initial = {
+      articles: (window.INITIAL_MOCK_DATA && window.INITIAL_MOCK_DATA.articles) ? JSON.parse(JSON.stringify(window.INITIAL_MOCK_DATA.articles)) : [],
+      recettes: (window.INITIAL_MOCK_DATA && window.INITIAL_MOCK_DATA.recettes) ? JSON.parse(JSON.stringify(window.INITIAL_MOCK_DATA.recettes)) : [],
+      devis: (window.INITIAL_MOCK_DATA && window.INITIAL_MOCK_DATA.devis) ? JSON.parse(JSON.stringify(window.INITIAL_MOCK_DATA.devis)) : []
+    };
+    localStorage.setItem('cp_mock_store', JSON.stringify(initial));
+    return initial;
+  }
+
+  function setLocalStore(store) {
+    localStorage.setItem('cp_mock_store', JSON.stringify(store));
+  }
+
+  function resetLocalStore() {
+    const initial = {
+      articles: (window.INITIAL_MOCK_DATA && window.INITIAL_MOCK_DATA.articles) ? JSON.parse(JSON.stringify(window.INITIAL_MOCK_DATA.articles)) : [],
+      recettes: (window.INITIAL_MOCK_DATA && window.INITIAL_MOCK_DATA.recettes) ? JSON.parse(JSON.stringify(window.INITIAL_MOCK_DATA.recettes)) : [],
+      devis: (window.INITIAL_MOCK_DATA && window.INITIAL_MOCK_DATA.devis) ? JSON.parse(JSON.stringify(window.INITIAL_MOCK_DATA.devis)) : []
+    };
+    localStorage.setItem('cp_mock_store', JSON.stringify(initial));
+    return initial;
+  }
+
+  function resetToDefaultSeed() {
+    if (confirm('Réinitialiser toutes les données aux valeurs par défaut de la démonstration ?')) {
+      resetLocalStore();
+      loadData();
+      const histView = document.getElementById('view-history');
+      if (histView && histView.classList.contains('active')) {
+        loadHistory();
+      }
+      toast('Données initiales restaurées.', 'success');
+    }
+  }
+
+  function isDemoActive() {
+    return true; // Mode showroom actif
+  }
+
+  function exitDemoMode() {
+    resetToDefaultSeed();
+  }
+
+  function checkDemoMutationGuard() {
+    return false; // Les mutations sont autorisées et simulées en local state
+  }
+
+  // ---- CONTRÔLEURS DE LA LANDING PAGE & DU SIMULATEUR ----
+  function highlightKpis() {
+    const panel = document.getElementById('result-panel');
+    if (panel) {
+      panel.classList.remove('kpi-pulse');
+      void panel.offsetWidth;
+      panel.classList.add('kpi-pulse');
+    }
+    const box = document.querySelector('.kpi-metric-box.highlight');
+    if (box) {
+      box.classList.remove('kpi-pulse');
+      void box.offsetWidth;
+      box.classList.add('kpi-pulse');
+    }
+  }
+
+  function startAutoDemoFromHero() {
+    const overlay = document.getElementById('landing-hero-overlay');
+    if (overlay) overlay.classList.add('dismissed');
+    if (typeof window.startAutoDemo === 'function') {
+      window.startAutoDemo();
+    }
+  }
+
+  function skipToApp() {
+    const overlay = document.getElementById('landing-hero-overlay');
+    if (overlay) overlay.classList.add('dismissed');
+  }
+
+  function showLandingHero() {
+    const overlay = document.getElementById('landing-hero-overlay');
+    if (overlay) overlay.classList.remove('dismissed');
+  }
+
+  // ---- INITIALISATION ----
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Gestion visuelle du bandeau démo
+    const banner = document.getElementById('demo-banner');
+    if (banner) banner.classList.add('active');
+
+    // Gestion du Mode Vitrine selon l'URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('app') === '1' || params.get('direct') === '1') {
+      skipToApp();
+    } else if (params.get('autodemo') === '1' || params.get('autodemo') === 'true') {
+      skipToApp();
+    }
+
+    // Date par défaut : jour courant
+    const today = new Date().toISOString().substring(0, 10);
+    const dateInput = document.getElementById('dv-date');
+    if (dateInput) dateInput.value = today;
+
+    // Chargement instantané des données depuis le local store
+    await loadData();
+    calcDevis();
+
+    // Lancement automatique du tour si paramètre ?tour=1
+    if (params.get('tour') === '1') {
+      setTimeout(startTour, 600);
+    }
+  });
+
+  // ---- CHARGEMENT DES RÉFÉRENTIELS (LOCAL STORE) ----
+  async function loadData() {
+    try {
+      const store = getLocalStore();
+      dbArticles = store.articles || [];
+      dbRecettes = store.recettes || [];
+
+      refreshRecettesTable();
+      refreshIngredientsTable();
+      refreshPickerDropdown();
+    } catch (e) {
+      console.error('[LOAD_DATA_ERROR]', e);
+      toast('Erreur de chargement des données locales.', 'error');
+    }
+  }
+
+  // ---- ROUTEUR DE VUES SPA ----
+  function switchView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+    const targetView = document.getElementById('view-' + name);
+    const targetTab  = document.getElementById('tab-' + name);
+
+    if (targetView) targetView.classList.add('active');
+    if (targetTab)  targetTab.classList.add('active');
+
+    if (name === 'history') loadHistory();
+  }
+
+  // ---- MOTEUR DE CHIFFRAGE TDABC & MARGES ----
+  function calcDevis() {
+    const couverts   = parseInt(document.getElementById('dv-couverts').value) || 0;
+    const margePct   = parseInt(document.getElementById('dv-marge').value) || 65;
+    const autresFrais= parseFloat(document.getElementById('dv-frais-montant').value) || 0;
+
+    let coutMatiere = 0;
+    let rseWeights = { Bio: 0, Local: 0, Labellise: 0, Standard: 0 };
+
+    devisPlats.forEach(dp => {
+      const r = dp.recette;
+      const qty = dp.quantite;
+      let coutRecette = 0;
+
+      (r.lignes || []).forEach(l => {
+        const ligneCost = (l.quantiteNecessaireUniteBase || 0) * (l.article?.prixUnitaireBase || 0);
+        coutRecette += ligneCost;
+
+        const classif = (l.article?.classificationRSE || '').toLowerCase();
+        if (classif.includes('bio'))        rseWeights.Bio       += ligneCost * qty;
+        else if (classif.includes('local')) rseWeights.Local     += ligneCost * qty;
+        else if (classif.includes('label')) rseWeights.Labellise += ligneCost * qty;
+        else                                rseWeights.Standard  += ligneCost * qty;
+      });
+
+      coutMatiere += coutRecette * qty;
+    });
+
+    const coutTotal = coutMatiere + autresFrais;
+    const hasDishes = devisPlats.length > 0 && couverts > 0;
+
+    // Calculs de valorisation
+    let prixTotal = 0, prixCouvert = 0, margeEur = 0, coeff = 0;
+    if (hasDishes && margePct < 100) {
+      prixTotal   = coutTotal / (1 - margePct / 100);
+      prixCouvert = prixTotal / couverts;
+      margeEur    = prixTotal - coutTotal;
+      coeff       = coutTotal > 0 ? (prixTotal / coutTotal) : 0;
+    }
+
+    const coutCouvert = couverts > 0 ? (coutTotal / couverts) : 0;
+    const fmt = n => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+
+    // Rendu DOM
+    document.getElementById('res-prix-couvert').textContent   = hasDishes ? fmt(prixCouvert) : '\u2014 €';
+    document.getElementById('res-prix-total-sub').textContent = hasDishes ? 'Chiffre d\'Affaires Total : ' + fmt(prixTotal) : 'Chiffre d\'Affaires Total : \u2014 €';
+    document.getElementById('res-cout-couvert').textContent   = hasDishes ? fmt(coutCouvert) : '\u2014 €';
+    document.getElementById('res-cout-total-sub').textContent = hasDishes ? 'Co\u00fbt Revient Total : ' + fmt(coutTotal) : 'Co\u00fbt Revient Total : \u2014 €';
+
+    document.getElementById('res-detail-mat').textContent     = hasDishes ? fmt(coutMatiere) : '\u2014 €';
+    document.getElementById('res-detail-frais').textContent   = fmt(autresFrais);
+    document.getElementById('res-detail-total').textContent   = hasDishes ? fmt(coutTotal) : '\u2014 €';
+    document.getElementById('res-marge-eur').textContent      = hasDishes ? fmt(margeEur) : '\u2014 €';
+    document.getElementById('res-marge-pct').textContent      = hasDishes ? margePct + ' %' : '\u2014 %';
+
+    const coeffEl = document.getElementById('res-coeff');
+    if (coeffEl) {
+      coeffEl.textContent = hasDishes ? '\u00d7' + coeff.toFixed(2) : '\u00d7\u2014';
+    }
+
+    // Calcul et rendu RSE / EGAlim
+    const totalRSE = rseWeights.Bio + rseWeights.Local + rseWeights.Labellise + rseWeights.Standard;
+    const calcPct = k => totalRSE > 0 ? Math.round((rseWeights[k] / totalRSE) * 100) : 0;
+    const bioPct   = calcPct('Bio');
+    const localPct = calcPct('Local');
+    const labelPct = calcPct('Labellise');
+    const stdPct   = calcPct('Standard');
+    const egalimPct = bioPct + localPct + labelPct;
+
+    document.getElementById('rse-pct-bio').textContent   = bioPct + '%';
+    document.getElementById('rse-pct-local').textContent = localPct + '%';
+    document.getElementById('rse-pct-label').textContent = labelPct + '%';
+    document.getElementById('rse-pct-std').textContent   = stdPct + '%';
+    document.getElementById('rse-score-pct').textContent = hasDishes ? egalimPct + '%' : '\u2014';
+
+    const donut = document.getElementById('rse-donut');
+    if (hasDishes && totalRSE > 0) {
+      let a = 0;
+      const seg = (p, c) => { const s = `${c} ${a}% ${a + p}%`; a += p; return s; };
+      donut.style.background = `conic-gradient(${[
+        seg(bioPct,   '#059669'),
+        seg(localPct, '#0284c7'),
+        seg(labelPct, '#d97706'),
+        seg(stdPct,   '#94a3b8')
+      ].join(', ')})`;
+    } else {
+      donut.style.background = 'var(--border)';
+    }
+
+    const eb = document.getElementById('egalim-badge');
+    eb.className = 'egalim-badge';
+    if (!hasDishes) {
+      eb.className += ' egalim-warn';
+      eb.textContent = 'Sélectionnez des recettes pour évaluer le score EGAlim';
+    } else if (egalimPct >= 50) {
+      eb.className += ' egalim-ok';
+      eb.textContent = `Conforme Loi EGAlim : ${egalimPct}% d\'approvisionnements durables (Seuil \u2265 50%)`;
+    } else if (egalimPct >= 30) {
+      eb.className += ' egalim-warn';
+      eb.textContent = `Attention : ${egalimPct}% d\'approvisionnements durables (Cible \u2265 50%)`;
+    } else {
+      eb.className += ' egalim-fail';
+      eb.textContent = `Non conforme EGAlim : ${egalimPct}% d\'approvisionnements durables`;
+    }
+  }
+
+  function onMargeChange() {
+    const v = document.getElementById('dv-marge').value;
+    document.getElementById('dv-marge-display').textContent = v + '%';
+    calcDevis();
+  }
+
+  // ---- GESTION DU SÉLECTEUR DE PLATS ----
+  function refreshPickerDropdown() {
+    const sel = document.getElementById('picker-recette');
+    if (!sel) return;
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">&mdash; Choisir une recette de la base &mdash;</option>';
+    dbRecettes.forEach(r => {
+      sel.innerHTML += `<option value="${r.id}">${r.nomRecette} (${catLabel(r.categoriePlat)})</option>`;
+    });
+    sel.value = prev;
+  }
+
+  function openDishPicker() {
+    document.getElementById('picker-qty').value = 1;
+    document.getElementById('picker-recette').value = '';
+    const prev = document.getElementById('picker-preview');
+    if (prev) prev.style.display = 'none';
+    openModal('modal-dish-picker');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const sel = document.getElementById('picker-recette');
+    if (sel) {
+      sel.addEventListener('change', () => {
+        const id = sel.value;
+        const r  = dbRecettes.find(x => x.id === id);
+        const preview = document.getElementById('picker-preview');
+        if (!r) { if (preview) preview.style.display = 'none'; return; }
+        if (preview) preview.style.display = 'block';
+
+        document.getElementById('picker-prev-name').textContent = r.nomRecette;
+        document.getElementById('picker-prev-ing').textContent  = (r.lignes?.length || 0) + ' composant(s)';
+        document.getElementById('picker-prev-cost').textContent = (r.coutIngredients || 0).toFixed(2) + ' €/portion';
+
+        let rseMap = { Bio: 0, Local: 0, Labellise: 0, Standard: 0 };
+        (r.lignes || []).forEach(l => {
+          const c = (l.article?.classificationRSE || '').toLowerCase();
+          const v = (l.quantiteNecessaireUniteBase || 0) * (l.article?.prixUnitaireBase || 0);
+          if (c.includes('bio'))        rseMap.Bio += v;
+          else if (c.includes('local')) rseMap.Local += v;
+          else if (c.includes('label')) rseMap.Labellise += v;
+          else                          rseMap.Standard += v;
+        });
+        const dom = Object.entries(rseMap).sort((a,b) => b[1] - a[1])[0][0];
+        document.getElementById('picker-prev-badge').innerHTML = rseBadgeHtml(dom === 'Labellise' ? 'Labellisé (AOP/AOC...)' : dom);
+      });
+    }
+  });
+
+  function addDish() {
+    const id  = document.getElementById('picker-recette').value;
+    const qty = parseInt(document.getElementById('picker-qty').value) || 1;
+    if (!id) { toast('Sélectionnez une recette valide.', 'error'); return; }
+    const r = dbRecettes.find(x => x.id === id);
+    if (!r)  { toast('Fiche technique introuvable.', 'error'); return; }
+
+    const existing = devisPlats.find(dp => dp.recette.id === id);
+    if (existing) {
+      existing.quantite += qty;
+    } else {
+      devisPlats.push({ recette: r, quantite: qty });
+    }
+
+    closeModal('modal-dish-picker');
+    renderDishList();
+    calcDevis();
+  }
+
+  function renderDishList() {
+    const container = document.getElementById('dishes-list');
+    if (devisPlats.length === 0) {
+      container.innerHTML = `<div class="empty-state">
+        <div class="empty-state-title">Aucune prestation sélectionnée</div>
+        <div class="empty-state-sub">Cliquez sur "+ Ajouter une Recette" pour modéliser le coût matière du menu.</div>
+      </div>`;
+      return;
+    }
+
+    container.innerHTML = devisPlats.map((dp, i) => {
+      const r = dp.recette;
+      const costPerPortion = r.coutIngredients || 0;
+      const costLine = costPerPortion * dp.quantite;
+
+      return `<div class="dish-item">
+        <div>
+          <div class="dish-item-name">${r.nomRecette}</div>
+          <div class="dish-item-meta">${catLabel(r.categoriePlat)} &bull; ${costPerPortion.toFixed(2)} € / portion unitaire</div>
+        </div>
+        <div class="dish-item-price">${costLine.toFixed(2)} €</div>
+        <div class="dish-qty-group">
+          <button class="dish-qty-btn" onclick="changeDishQty(${i}, -1)" title="Diminuer portions">&minus;</button>
+          <span class="dish-qty-val">${dp.quantite}</span>
+          <button class="dish-qty-btn" onclick="changeDishQty(${i}, +1)" title="Augmenter portions">+</button>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeDish(${i})" title="Supprimer la ligne">Suppr.</button>
+      </div>`;
+    }).join('');
+  }
+
+  function changeDishQty(idx, delta) {
+    devisPlats[idx].quantite = Math.max(1, devisPlats[idx].quantite + delta);
+    renderDishList();
+    calcDevis();
+  }
+
+  function removeDish(idx) {
+    devisPlats.splice(idx, 1);
+    renderDishList();
+    calcDevis();
+  }
+
+  // ---- SAUVEGARDE DEVIS (SIMULATION CRUD DANS LE STORE LOCAL) ----
+  async function saveDevis() {
+    const nomClient   = document.getElementById('dv-client').value.trim();
+    const dateEv      = document.getElementById('dv-date').value;
+    const couverts    = parseInt(document.getElementById('dv-couverts').value);
+    const margeCible  = parseInt(document.getElementById('dv-marge').value);
+    const autresFrais = parseFloat(document.getElementById('dv-frais-montant').value) || 0;
+    const autresFraisLabel = document.getElementById('dv-frais-label').value.trim();
+
+    if (!nomClient) { toast('Le libellé du client ou événement est obligatoire.', 'error'); return; }
+    if (!dateEv)    { toast('La date de réalisation est requise.', 'error'); return; }
+    if (!couverts || couverts <= 0) { toast('Le nombre de convives doit être supérieur à zéro.', 'error'); return; }
+    if (devisPlats.length === 0)    { toast('Ajoutez au moins une fiche technique pour chiffrer le devis.', 'error'); return; }
+
+    let coutMatiere = 0;
+    devisPlats.forEach(dp => {
+      let coutFiche = 0;
+      (dp.recette.lignes || []).forEach(l => {
+        coutFiche += (l.quantiteNecessaireUniteBase || 0) * (l.article?.prixUnitaireBase || 0);
+      });
+      coutMatiere += coutFiche * dp.quantite;
+    });
+    const coutTotal = coutMatiere + autresFrais;
+    const caConseille = margeCible < 100 ? Math.round((coutTotal / (1 - margeCible / 100)) * 100) / 100 : 0;
+
+    const newDevis = {
+      id: 'dev-' + Date.now(),
+      nomClient,
+      dateEvenement: dateEv,
+      chiffreAffairesSaisi: caConseille,
+      chiffreAffairesSaisiPrevu: caConseille,
+      nombreCouverts: couverts,
+      devisLots: [{
+        id: 'lot-' + Date.now(),
+        nom: 'Prestations',
+        lignesProduit: devisPlats.map(dp => ({
+          id: 'lp-' + Math.random().toString(36).substr(2, 9),
+          ficheTechniqueId: dp.recette.id,
+          quantitePrevue: dp.quantite,
+          prixUnitaireFige: dp.recette.coutIngredients || 0,
+          ficheTechnique: dp.recette
+        }))
+      }],
+      fraisExternes: autresFrais > 0 ? [{
+        id: 'fe-' + Date.now(),
+        categorie: autresFraisLabel || 'Autres Frais Directs',
+        montantHT: autresFrais
+      }] : [],
+      creeLe: new Date().toISOString()
+    };
+
+    const store = getLocalStore();
+    store.devis = store.devis || [];
+    store.devis.unshift(newDevis);
+    setLocalStore(store);
+
+    toast('Devis enregistré avec succès dans le portefeuille.', 'success');
+    resetDevis();
+  }
+
+  function resetDevis() {
+    devisPlats = [];
+    document.getElementById('dv-client').value = '';
+    document.getElementById('dv-date').value = new Date().toISOString().substring(0, 10);
+    document.getElementById('dv-couverts').value = 50;
+    document.getElementById('dv-marge').value = 65;
+    document.getElementById('dv-marge-display').textContent = '65%';
+    document.getElementById('dv-frais-montant').value = '';
+    document.getElementById('dv-frais-label').value = '';
+    renderDishList();
+    calcDevis();
+  }
+
+  // ---- HISTORIQUE DEVIS (LECTURE STORE LOCAL) ----
+  async function loadHistory() {
+    const container = document.getElementById('devis-history-list');
+    const store = getLocalStore();
+    const list = store.devis || [];
+
+    if (!list.length) {
+      container.innerHTML = `<div class="empty-state">
+        <div class="empty-state-title">Aucun événement archivé</div>
+        <div class="empty-state-sub">Les devis générés depuis le calculateur apparaîtront ici.</div>
+      </div>`;
+      return;
+    }
+
+    container.innerHTML = list.map(ev => {
+      let cout = 0;
+      (ev.devisLots || []).forEach(lot => {
+        (lot.lignesProduit || []).forEach(lp => {
+          (lp.ficheTechnique?.lignes || []).forEach(l => {
+            cout += (l.quantiteNecessaireUniteBase || 0) * (l.article?.prixUnitaireBase || 0) * lp.quantitePrevue;
+          });
+        });
+      });
+      const frais = (ev.fraisExternes || []).reduce((s, f) => s + (f.montantHT || 0), 0);
+      const ca = ev.chiffreAffairesSaisi || 0;
+      const marge = ca > 0 ? Math.round(((ca - cout - frais) / ca) * 100) : 0;
+      const platsCount = (ev.devisLots || []).reduce((s, l) => s + (l.lignesProduit || []).length, 0);
+
+      return `<div class="event-card">
+        <div class="event-card-main">
+          <div class="event-card-title">${ev.nomClient}</div>
+          <div class="event-card-meta">${new Date(ev.dateEvenement).toLocaleDateString('fr-FR')} &bull; ${platsCount} plat(s) au menu</div>
+        </div>
+        <div class="event-card-kpis">
+          <div class="event-kpi-item">
+            <span class="event-kpi-val">${ca.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} €</span>
+            <span class="event-kpi-lbl">CA Conseillé</span>
+          </div>
+          <div class="event-kpi-item">
+            <span class="event-kpi-val">${(cout + frais).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} €</span>
+            <span class="event-kpi-lbl">Coût Direct</span>
+          </div>
+          <div class="event-kpi-item">
+            <span class="event-kpi-val" style="color:${marge >= 50 ? '#059669' : '#d97706'}">${marge}%</span>
+            <span class="event-kpi-lbl">Marge Brute</span>
+          </div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deleteDevis('${ev.id}')">Supprimer</button>
+      </div>`;
+    }).join('');
+  }
+
+  async function deleteDevis(id) {
+    if (!confirm('Confirmer la suppression définitive de cet événement du portefeuille ?')) return;
+    const store = getLocalStore();
+    store.devis = (store.devis || []).filter(d => d.id !== id);
+    setLocalStore(store);
+    toast('Événement supprimé du portefeuille.', 'success');
+    loadHistory();
+  }
+
+  // ---- GESTION DES FICHES RECETTES ----
+  function refreshRecettesTable() {
+    const tbody = document.getElementById('recettes-tbody');
+    if (!tbody) return;
+    if (!dbRecettes.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-muted);">Aucune fiche technique répertoriée.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = dbRecettes.map(r => {
+      const rseScore = calcRseScore(r);
+      return `<tr>
+        <td><strong>${r.nomRecette}</strong></td>
+        <td><span class="badge badge-category">${catLabel(r.categoriePlat)}</span></td>
+        <td style="color:var(--text-muted);">${(r.lignes || []).length} denrée(s)</td>
+        <td style="text-align:right;" class="mono font-semibold">${(r.coutIngredients || 0).toFixed(2)} €</td>
+        <td style="text-align:right;" class="mono">${rseScore}% EGAlim</td>
+        <td style="text-align:right;">
+          <button class="btn btn-ghost btn-sm" onclick="editRecipe('${r.id}')" style="margin-right:4px;">Éditer</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteRecipe('${r.id}')">Suppr.</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function calcRseScore(r) {
+    let rseMap = { Bio: 0, Local: 0, Labellise: 0, Standard: 0 };
+    (r.lignes || []).forEach(l => {
+      const c = (l.article?.classificationRSE || '').toLowerCase();
+      const v = (l.quantiteNecessaireUniteBase || 0) * (l.article?.prixUnitaireBase || 0);
+      if (c.includes('bio'))        rseMap.Bio += v;
+      else if (c.includes('local')) rseMap.Local += v;
+      else if (c.includes('label')) rseMap.Labellise += v;
+      else                          rseMap.Standard += v;
+    });
+    const tot = Object.values(rseMap).reduce((a, b) => a + b, 0);
+    return tot > 0 ? Math.round(((rseMap.Bio + rseMap.Local + rseMap.Labellise) / tot) * 100) : 0;
+  }
+
+  let recipeIngredientLines = [];
+
+  function openRecipeModal(editData = null) {
+    document.getElementById('recipe-edit-id').value = '';
+    document.getElementById('recipe-nom').value     = '';
+    document.getElementById('recipe-cat').value     = 'PLAT';
+    document.getElementById('recipe-modal-title').textContent = 'Nouvelle Fiche Technique';
+    document.getElementById('recipe-save-btn').textContent = 'Enregistrer';
+    recipeIngredientLines = [];
+
+    if (editData) {
+      document.getElementById('recipe-edit-id').value = editData.id;
+      document.getElementById('recipe-nom').value     = editData.nomRecette;
+      document.getElementById('recipe-cat').value     = editData.categoriePlat;
+      document.getElementById('recipe-modal-title').textContent = 'Édition Fiche Technique';
+      document.getElementById('recipe-save-btn').textContent = 'Mettre à Jour';
+      recipeIngredientLines = (editData.lignes || []).map(l => ({
+        articleId: l.articleId,
+        qty: l.quantiteNecessaireUniteBase
+      }));
+    }
+    renderRecipeLines();
+    openModal('modal-recipe');
+  }
+
+  function addIngredientLine() {
+    recipeIngredientLines.push({ articleId: '', qty: '' });
+    renderRecipeLines();
+  }
+
+  function renderRecipeLines() {
+    const container = document.getElementById('recipe-lines');
+    let totalCost = 0;
+    container.innerHTML = recipeIngredientLines.map((line, i) => {
+      const art = dbArticles.find(a => a.id === line.articleId);
+      const lineCost = art ? (parseFloat(line.qty) || 0) * (art.prixUnitaireBase || 0) : 0;
+      totalCost += lineCost;
+
+      const artOptions = dbArticles.map(a =>
+        `<option value="${a.id}" ${a.id === line.articleId ? 'selected' : ''}>${a.nom} (${a.uniteBase})</option>`
+      ).join('');
+
+      return `<div class="ingredient-line">
+        <select class="form-select" style="padding:6px 8px;font-size:12px;" onchange="updateRecipeLine(${i}, 'articleId', this.value)">
+          <option value="">&mdash; Choisir Ingrédient &mdash;</option>
+          ${artOptions}
+        </select>
+        <input class="form-input" type="number" step="0.001" placeholder="Qté base" value="${line.qty}"
+          style="padding:6px 8px;font-size:12px;" onchange="updateRecipeLine(${i}, 'qty', this.value)">
+        <div class="ingredient-line-cost">${lineCost.toFixed(3)} €</div>
+        <button class="btn btn-danger btn-sm" onclick="removeRecipeLine(${i})">&times;</button>
+      </div>`;
+    }).join('');
+
+    document.getElementById('recipe-cost-preview').textContent =
+      recipeIngredientLines.length > 0 ? `Coût Total Prévisionnel / Portion : ${totalCost.toFixed(2)} €` : '';
+  }
+
+  function updateRecipeLine(i, key, val) {
+    recipeIngredientLines[i][key] = val;
+    renderRecipeLines();
+  }
+
+  function removeRecipeLine(i) {
+    recipeIngredientLines.splice(i, 1);
+    renderRecipeLines();
+  }
+
+  async function saveRecipe() {
+    if (checkDemoMutationGuard()) return;
+
+    const nom    = document.getElementById('recipe-nom').value.trim();
+    const cat    = document.getElementById('recipe-cat').value;
+    const editId = document.getElementById('recipe-edit-id').value;
+    if (!nom) { toast('Le libellé de la fiche recette est requis.', 'error'); return; }
+
+    const lignes = recipeIngredientLines.filter(l => l.articleId && l.qty)
+      .map(l => {
+        const art = dbArticles.find(a => a.id === l.articleId);
+        return {
+          id: 'ftline_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          articleId: l.articleId,
+          article: art ? { ...art } : null,
+          quantiteNecessaireUniteBase: parseFloat(l.qty)
+        };
+      });
+
+    try {
+      const store = getLocalStore();
+      if (editId) {
+        const idx = store.recettes.findIndex(r => r.id === editId);
+        if (idx !== -1) {
+          store.recettes[idx].nomRecette = nom;
+          store.recettes[idx].categoriePlat = cat;
+          store.recettes[idx].lignes = lignes;
+        }
+      } else {
+        const newRecipe = {
+          id: 'ft_' + Date.now(),
+          nomRecette: nom,
+          categoriePlat: cat,
+          lignes: lignes
+        };
+        store.recettes.unshift(newRecipe);
+      }
+      setLocalStore(store);
+      toast(editId ? 'Fiche technique mise à jour.' : 'Fiche technique créée avec succès.', 'success');
+      closeModal('modal-recipe');
+      await loadData();
+    } catch (e) {
+      toast('Erreur : ' + e.message, 'error');
+    }
+  }
+
+  function editRecipe(id) {
+    const r = dbRecettes.find(x => x.id === id);
+    if (r) openRecipeModal(r);
+  }
+
+  async function deleteRecipe(id) {
+    if (checkDemoMutationGuard()) return;
+
+    if (!confirm('Supprimer cette fiche technique et ses liaisons de coûts ?')) return;
+    try {
+      const store = getLocalStore();
+      store.recettes = store.recettes.filter(r => r.id !== id);
+      setLocalStore(store);
+      toast('Fiche technique supprimée.', 'success');
+      await loadData();
+    } catch {
+      toast('Erreur lors de la suppression.', 'error');
+    }
+  }
+
+  // ---- GESTION DES ARTICLES / MERCURIALE ----
+  function refreshIngredientsTable() {
+    const tbody = document.getElementById('ingredients-tbody');
+    if (!tbody) return;
+    if (!dbArticles.length) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-muted);">Aucun article répertorié.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = dbArticles.map(a => `<tr>
+      <td><strong>${a.nom}</strong></td>
+      <td style="color:var(--text-muted);">${catIngLabel(a.categorie)}</td>
+      <td style="text-align:right;" class="mono font-semibold">${(a.prixUnitaireBase || 0).toFixed(2)} €</td>
+      <td class="mono" style="color:var(--text-muted);">${a.uniteBase}</td>
+      <td style="color:var(--text-muted);">${a.familleRSE || '&mdash;'}</td>
+      <td>${a.classificationRSE ? rseBadgeHtml(a.classificationRSE) : '<span class="badge badge-std">Standard</span>'}</td>
+      <td style="text-align:right;">
+        <button class="btn btn-ghost btn-sm" onclick="editIngredient('${a.id}')" style="margin-right:4px;">Éditer</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteIngredient('${a.id}')">Suppr.</button>
+      </td>
+    </tr>`).join('');
+  }
+
+  function openIngredientModal(editData = null) {
+    document.getElementById('ing-edit-id').value = '';
+    document.getElementById('ing-nom').value     = '';
+    document.getElementById('ing-cat').value     = 'EPICERIE_ET_SEC';
+    document.getElementById('ing-prix').value    = '';
+    document.getElementById('ing-unite-base').value  = '';
+    document.getElementById('ing-unite-achat').value = '';
+    document.getElementById('ing-famille-rse').value = '';
+    document.getElementById('ing-classif-rse').value = '';
+    document.getElementById('ing-modal-title').textContent = 'Nouvel Article Mercuriale';
+    document.getElementById('ing-save-btn').textContent = 'Enregistrer';
+
+    if (editData) {
+      document.getElementById('ing-edit-id').value = editData.id;
+      document.getElementById('ing-nom').value     = editData.nom;
+      document.getElementById('ing-cat').value     = editData.categorie;
+      document.getElementById('ing-prix').value    = editData.prixUnitaireBase;
+      document.getElementById('ing-unite-base').value  = editData.uniteBase;
+      document.getElementById('ing-unite-achat').value = editData.uniteAchat;
+      document.getElementById('ing-famille-rse').value = editData.familleRSE || '';
+      document.getElementById('ing-classif-rse').value = editData.classificationRSE || '';
+      document.getElementById('ing-modal-title').textContent = 'Édition Article Mercuriale';
+      document.getElementById('ing-save-btn').textContent = 'Mettre à Jour';
+    }
+    openModal('modal-ingredient');
+  }
+
+  async function saveIngredient() {
+    if (checkDemoMutationGuard()) return;
+
+    const editId     = document.getElementById('ing-edit-id').value;
+    const nom        = document.getElementById('ing-nom').value.trim();
+    const categorie  = document.getElementById('ing-cat').value;
+    const prix       = parseFloat(document.getElementById('ing-prix').value);
+    const uniteBase  = document.getElementById('ing-unite-base').value.trim();
+    const uniteAchat = document.getElementById('ing-unite-achat').value.trim() || uniteBase;
+    const familleRSE = document.getElementById('ing-famille-rse').value;
+    const classifRSE = document.getElementById('ing-classif-rse').value;
+
+    if (!nom)       { toast('Le libellé de l\'article est obligatoire.', 'error'); return; }
+    if (!uniteBase) { toast('L\'unité de mesure de base est requise.', 'error'); return; }
+    if (isNaN(prix) || prix < 0) { toast('Le prix unitaire doit être un nombre positif.', 'error'); return; }
+
+    const payload = {
+      nom, categorie, prixUnitaireBase: prix, prixAchatUnitaire: prix,
+      uniteBase, uniteAchat, uniteRecette: uniteBase,
+      familleRSE: familleRSE || null,
+      classificationRSE: classifRSE || null
+    };
+
+    try {
+      const store = getLocalStore();
+      if (editId) {
+        const idx = store.articles.findIndex(a => a.id === editId);
+        if (idx !== -1) {
+          store.articles[idx] = { ...store.articles[idx], ...payload };
+          store.recettes.forEach(r => {
+            if (r.lignes) {
+              r.lignes.forEach(l => {
+                if (l.articleId === editId) {
+                  l.article = { ...store.articles[idx] };
+                }
+              });
+            }
+          });
+        }
+      } else {
+        const newArticle = {
+          id: 'art_' + Date.now(),
+          ...payload
+        };
+        store.articles.unshift(newArticle);
+      }
+      setLocalStore(store);
+      toast(editId ? 'Article mis à jour.' : 'Article enregistré dans la mercuriale.', 'success');
+      closeModal('modal-ingredient');
+      await loadData();
+    } catch (e) {
+      toast('Erreur : ' + e.message, 'error');
+    }
+  }
+
+  function editIngredient(id) {
+    const a = dbArticles.find(x => x.id === id);
+    if (a) openIngredientModal(a);
+  }
+
+  async function deleteIngredient(id) {
+    if (checkDemoMutationGuard()) return;
+
+    if (!confirm('Supprimer cet ingrédient de la mercuriale ?')) return;
+    try {
+      const store = getLocalStore();
+      store.articles = store.articles.filter(a => a.id !== id);
+      setLocalStore(store);
+      toast('Article retiré de la mercuriale.', 'success');
+      await loadData();
+    } catch {
+      toast('Erreur lors de la suppression de l\'article.', 'error');
+    }
+  }
+
+  // ---- LIBELLÉS ET HELPERS ----
+  function catLabel(c) {
+    const map = { ENTREE: 'Entrée', PLAT: 'Plat Principal', DESSERT: 'Dessert', COCKTAIL: 'Cocktail', BUFFET: 'Buffet' };
+    return map[c] || c;
+  }
+  function catIngLabel(c) {
+    const map = {
+      PRODUITS_LAITIERS: 'Produits Laitiers', VIANDES_ET_VOLAILLES: 'Viandes & Volailles',
+      POISSONS_ET_CRUSTACES: 'Poissons & Crustacés', EPICERIE_ET_SEC: 'Épicerie',
+      FRUITS_ET_LEGUMES: 'Fruits & Légumes', BOISSONS: 'Boissons', SPIRITUEUX: 'Spiritueux'
+    };
+    return map[c] || c;
+  }
+
+  function rseBadgeHtml(classif) {
+    if (!classif) return '';
+    const c = classif.toLowerCase();
+    if (c.includes('bio'))   return '<span class="badge badge-bio">Bio (AB)</span>';
+    if (c.includes('local')) return '<span class="badge badge-local">Local &lt;150km</span>';
+    if (c.includes('label')) return '<span class="badge badge-label">SIQO / AOP</span>';
+    return '<span class="badge badge-std">Standard</span>';
+  }
+
+  function openModal(id)  { const m = document.getElementById(id); if (m) m.classList.add('open'); }
+  function closeModal(id) { const m = document.getElementById(id); if (m) m.classList.remove('open'); }
+
+  function toast(msg, type = 'success') {
+    const el = document.createElement('div');
+    el.className = `toast toast-${type}`;
+    el.textContent = msg;
+    const c = document.getElementById('toast-container');
+    if (c) c.appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+
+  // ---- VISITE GUIDÉE / ONBOARDING DAF (DRIVER.JS) ----
+  function startTour() {
+    if (typeof window.driver === 'undefined' || !window.driver.js) {
+      toast('Chargement du module de visite guidée...', 'warning');
+      return;
+    }
+
+    switchView('devis');
+
+    const driverObj = window.driver.js.driver({
+      showProgress: true,
+      animate: true,
+      nextBtnText: 'Suivant \u2192',
+      prevBtnText: '\u2190 Précédent',
+      doneBtnText: 'Terminer la Visite',
+      steps: [
+        {
+          element: '#result-panel',
+          popover: {
+            title: '1. Calculateur de Marge & TDABC',
+            description: 'Ce tableau de bord rétrocalcule en temps réel le prix de vente conseillé par convive, la marge brute et le seuil de rentabilité sur la base des fiches techniques sélectionnées.',
+            side: 'left',
+            align: 'start'
+          }
+        },
+        {
+          element: '#tour-card-dishes',
+          popover: {
+            title: '2. Composition Analytique & Coûts Matières',
+            description: 'Sélectionnez des préparations culinaires normées. Le moteur agrège les coûts unitaires de chaque denrée pour calculer le coût matière exact au gramme près.',
+            side: 'top',
+            align: 'start'
+          }
+        },
+        {
+          element: '#tour-card-rse',
+          popover: {
+            title: '3. Conformité EGAlim & Audit RSE',
+            description: 'Traçabilité des achats responsables : répartition automatique Bio, Local et SIQO avec calcul du ratio réglementaire EGAlim (seuil légal \u2265 50%).',
+            side: 'left',
+            align: 'center'
+          }
+        }
+      ]
+    });
+
+    driverObj.drive();
+  }
+  </script>
+  <!-- Moteur de simulation automatique haute fidélité -->
+  <script src="/autoDemo.js"></script>
+</body>
+</html>
