@@ -816,28 +816,33 @@
       letter-spacing: -0.02em;
       color: #000000;
     }
+    .hero-nav-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
     .hero-nav-btn {
-      background: #111111;
-      border: 1px solid #111111;
+      background: #000000;
+      border: 1px solid #000000;
       color: #ffffff;
-      font-size: 13px;
+      font-size: 13.5px;
       font-family: inherit;
       cursor: pointer;
-      padding: 9px 20px;
+      padding: 10px 22px;
       border-radius: 6px;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: -0.01em;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
       transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
     .hero-nav-btn:hover {
-      background: #000000;
+      background: #111111;
       color: #ffffff;
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.18), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
     }
     .hero-nav-btn:active {
       transform: translateY(0);
@@ -851,25 +856,6 @@
       flex-direction: column;
       align-items: center;
       margin: auto 0;
-    }
-    .hero-badge {
-      font-size: 11.5px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #888888;
-      margin-bottom: 24px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hero-badge::before {
-      content: '';
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #000000;
     }
     .hero-headline {
       font-size: clamp(40px, 6.5vw, 78px);
@@ -888,33 +874,144 @@
       max-width: 620px;
       margin: 0 auto 38px auto;
     }
-    .btn-launch-hero {
+
+    /* ---- BOUTONS HAUTE COUTURE (HERO CALL TO ACTION) ---- */
+    .hero-cta-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .btn-hero-access {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
       background: #000000;
       color: #ffffff;
-      padding: 15px 34px;
-      border-radius: 4px;
+      padding: 18px 40px;
+      border-radius: 6px;
       border: 1px solid #000000;
-      font-size: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      letter-spacing: -0.015em;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+    }
+    .btn-hero-access:hover {
+      background: #111111;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.22), 0 6px 12px -2px rgba(0, 0, 0, 0.08);
+    }
+    .btn-hero-access:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-arrow {
+      display: inline-block;
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 17px;
+      line-height: 1;
+    }
+    .btn-hero-access:hover .btn-arrow,
+    .hero-nav-btn:hover .btn-arrow,
+    .nav-cta-btn:hover .btn-arrow {
+      transform: translateX(5px);
+    }
+
+    .btn-launch-hero {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #ffffff;
+      color: #111111;
+      padding: 17px 30px;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      font-size: 14.5px;
       font-weight: 500;
       font-family: inherit;
       letter-spacing: -0.01em;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-      transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-launch-hero:hover {
-      background: #1a1a1a;
+      background: #f8fafc;
+      border-color: #d1d5db;
       transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     }
     .btn-launch-hero svg {
-      width: 13px;
-      height: 13px;
+      width: 14px;
+      height: 14px;
       fill: currentColor;
     }
+
+    /* ---- RIDEAU DE TRANSITION LUXE (EFFET VOILE APPLE / ADIDAS) ---- */
+    .page-curtain {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .curtain-panel {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      border-top: 1px solid #e5e7eb;
+      box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.1);
+      transform: translateY(100%);
+      will-change: transform;
+    }
+    .curtain-rising .curtain-panel {
+      transform: translateY(0%);
+      transition: transform 500ms cubic-bezier(0.76, 0, 0.24, 1);
+      pointer-events: auto;
+    }
+    .curtain-falling .curtain-panel {
+      transform: translateY(-100%);
+      transition: transform 500ms cubic-bezier(0.76, 0, 0.24, 1);
+      pointer-events: auto;
+    }
+
+    /* ---- APPARITION EN CASCADE (STAGGERED FADE-UP) ---- */
+    @keyframes cascadeFadeUp {
+      0% {
+        opacity: 0;
+        transform: translateY(26px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stagger-item {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cascade-active .stagger-item {
+      opacity: 0;
+      animation: cascadeFadeUp 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      will-change: transform, opacity;
+    }
+
+    .cascade-active .stagger-delay-1 { animation-delay: 50ms; }
+    .cascade-active .stagger-delay-2 { animation-delay: 130ms; }
+    .cascade-active .stagger-delay-3 { animation-delay: 210ms; }
+    .cascade-active .stagger-delay-4 { animation-delay: 290ms; }
+    .cascade-active .stagger-delay-5 { animation-delay: 370ms; }
+    .cascade-active .stagger-delay-6 { animation-delay: 450ms; }
+
     .hero-footer-bar {
       width: 100%;
       max-width: 1100px;
@@ -949,8 +1046,10 @@
 </head>
 <body>
 
-  <!-- ========== ÉCRAN DE TRANSITION MINIMALISTE ========== -->
-  <div id="page-transition-screen" class="page-transition-screen"></div>
+  <!-- ========== RIDEAU DE TRANSITION LUXE (EFFET VOILE APPLE / ADIDAS) ========== -->
+  <div id="page-curtain" class="page-curtain" aria-hidden="true">
+    <div class="curtain-panel"></div>
+  </div>
 
   <!-- ========== LANDING PAGE HERO (MODE VITRINE INITIAL) ========== -->
   <div id="landing-hero-overlay" class="landing-hero-overlay">
@@ -960,7 +1059,8 @@
       </div>
       <nav class="hero-nav-actions">
         <button type="button" class="hero-nav-btn" onclick="skipToApp()">
-          Accéder à l'application &rarr;
+          <span>Accéder à l'application</span>
+          <span class="btn-arrow">&rarr;</span>
         </button>
       </nav>
     </header>
@@ -972,7 +1072,11 @@
       <p class="hero-subheadline">
         L'ingénierie financière au service de la gastronomie événementielle. Méthode TDABC, coûts unitaires et optimisation des marges en temps réel.
       </p>
-      <div>
+      <div class="hero-cta-wrapper">
+        <button type="button" class="btn-hero-access" onclick="skipToApp()">
+          <span>Accéder à l'application</span>
+          <span class="btn-arrow">&rarr;</span>
+        </button>
         <button type="button" class="btn-launch-hero" id="btn-hero-launch-demo" onclick="startAutoDemoFromHero()">
           <svg viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z"/>
@@ -989,7 +1093,7 @@
   </div>
 
   <!-- ========== BANNIÈRE MODE DÉMO ========== -->
-  <div id="demo-banner" class="active">
+  <div id="demo-banner" class="stagger-item stagger-delay-1 active">
     <div class="demo-pill">
       <span class="demo-dot"></span>
       <span>Showroom Portfolio &mdash; Moteur Analytique (Données Simulées en Mémoire Locale)</span>
@@ -1002,7 +1106,7 @@
   </div>
 
   <!-- ========== APPLICATION HEADER ========== -->
-  <header class="app-header">
+  <header class="app-header stagger-item stagger-delay-1">
     <div class="brand-block">
       <div class="app-logo">
         Cannelle et Piment
@@ -1038,7 +1142,7 @@
          VIEW 1 — NOUVEAU DEVIS ANALYTIQUE
     ============================================================ -->
     <div class="view active" id="view-devis">
-      <div class="view-header">
+      <div class="view-header stagger-item stagger-delay-2">
         <div>
           <h1 class="page-title">Calculateur de Rentabilité &amp; Devis Événementiel</h1>
           <p class="page-subtitle">Modélisation de prix par la méthode TDABC &mdash; Chiffrage matière, marge prévisionnelle et conformité EGAlim</p>
@@ -1051,7 +1155,7 @@
         <div>
 
           <!-- 1. IDENTIFICATION CLIENT -->
-          <div class="card" id="tour-card-client">
+          <div class="card stagger-item stagger-delay-3" id="tour-card-client">
             <div class="card-title">Paramètres de l'Événement</div>
             <div class="grid-3">
               <div class="form-group">
@@ -1070,7 +1174,7 @@
           </div>
 
           <!-- 2. MARGE CIBLE STRATÉGIQUE -->
-          <div class="card" id="tour-card-marge">
+          <div class="card stagger-item stagger-delay-3" id="tour-card-marge">
             <div class="card-title">
               <span>Objectif de Marge Brute Cible</span>
               <span class="mono" style="color:var(--text-muted);font-size:11px;">Benchmark Traiteur : 60% &ndash; 75%</span>
@@ -1082,7 +1186,7 @@
           </div>
 
           <!-- 3. COMPOSITION DU MENU / SÉLECTION RECETTES -->
-          <div class="card" id="tour-card-dishes">
+          <div class="card stagger-item stagger-delay-4" id="tour-card-dishes">
             <div class="card-title">
               <span>Nomenclature &amp; Fiches Techniques Associées</span>
               <button class="btn btn-primary btn-sm" onclick="openDishPicker()">+ Ajouter une Recette</button>
@@ -1096,7 +1200,7 @@
           </div>
 
           <!-- 4. FRAIS DIRECTS ADDITIONNELS -->
-          <div class="card">
+          <div class="card stagger-item stagger-delay-5">
             <div class="card-title">Frais Directs Spécifiques (Hors Matière)</div>
             <div class="grid-2">
               <div class="form-group">
@@ -1120,7 +1224,7 @@
         </div>
 
         <!-- DROITE : PANNEAU DES RÉSULTATS ANALYTIQUES (STICKY) -->
-        <aside class="result-panel" id="result-panel">
+        <aside class="result-panel stagger-item stagger-delay-6" id="result-panel">
           <div class="card-title" style="margin-bottom:12px;">Synthèse Prévisionnelle en Temps Réel</div>
 
           <!-- KPI 1 : PRIX CONSEILLÉ -->
@@ -1541,25 +1645,47 @@
     }
   }
 
+  let isNavigating = false;
+
   function skipToApp() {
+    if (isNavigating) return;
     const overlay = document.getElementById('landing-hero-overlay');
-    const transitionScreen = document.getElementById('page-transition-screen');
-    if (transitionScreen) {
-      transitionScreen.classList.add('active');
+    if (!overlay || overlay.classList.contains('dismissed')) return;
+
+    isNavigating = true;
+    const curtain = document.getElementById('page-curtain');
+
+    if (curtain) {
+      // 1. Voile monte (0 -> 480ms)
+      curtain.classList.remove('curtain-falling');
+      curtain.classList.add('curtain-rising');
+
       setTimeout(() => {
-        if (overlay) overlay.classList.add('dismissed');
-        const activeView = document.querySelector('.view.active');
-        if (activeView) {
-          activeView.classList.remove('view-animate');
-          void activeView.offsetWidth;
-          activeView.classList.add('view-animate');
-        }
+        // 2. À 480ms, l'écran d'accueil est entièrement recouvert par le voile
+        overlay.classList.add('dismissed');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+
+        // Déclenchement de la cascade d'apparition des composants
+        document.body.classList.add('cascade-active');
+
+        // 3. Le voile continue son ascension et découvre l'application par le bas
+        curtain.classList.remove('curtain-rising');
+        curtain.classList.add('curtain-falling');
+
         setTimeout(() => {
-          transitionScreen.classList.remove('active');
-        }, 120);
-      }, 160);
+          // 4. Fin de la transition rideau
+          curtain.classList.remove('curtain-falling');
+          isNavigating = false;
+
+          // Retrait propre de cascade-active après achèvement des délais stagger
+          setTimeout(() => {
+            document.body.classList.remove('cascade-active');
+          }, 650);
+        }, 500);
+      }, 480);
     } else {
-      if (overlay) overlay.classList.add('dismissed');
+      overlay.classList.add('dismissed');
+      isNavigating = false;
     }
   }
 

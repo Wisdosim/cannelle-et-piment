@@ -159,31 +159,81 @@
       margin: 0 auto 40px auto;
     }
 
-    /* UN SEUL BOUTON PRINCIPAL HAUTE COUTURE */
-    .btn-launch {
+    /* BOUTONS HERO CALL TO ACTION HAUTE COUTURE */
+    .hero-cta-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .btn-hero-access {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
       background: #000000;
       color: #ffffff;
-      padding: 16px 36px;
-      border-radius: var(--radius);
+      padding: 18px 40px;
+      border-radius: 6px;
       border: 1px solid #000000;
-      font-size: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      letter-spacing: -0.015em;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-hero-access:hover {
+      background: #111111;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.22), 0 6px 12px -2px rgba(0, 0, 0, 0.08);
+    }
+    .btn-hero-access:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-arrow {
+      display: inline-block;
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 17px;
+      line-height: 1;
+    }
+    .btn-hero-access:hover .btn-arrow,
+    .nav-cta-btn:hover .btn-arrow {
+      transform: translateX(5px);
+    }
+
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #ffffff;
+      color: #111111;
+      padding: 17px 30px;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      font-size: 14.5px;
       font-weight: 500;
       letter-spacing: -0.01em;
       cursor: pointer;
       text-decoration: none;
-      transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-launch:hover {
-      background: #1a1a1a;
+      background: #f8fafc;
+      border-color: #d1d5db;
       transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     }
     .btn-launch svg {
-      width: 13px;
-      height: 13px;
+      width: 14px;
+      height: 14px;
       fill: currentColor;
     }
 
@@ -218,7 +268,10 @@
       Cannelle et Piment
     </a>
     <nav class="nav-actions">
-      <a href="/index.html?app=1" class="nav-cta-btn">Accéder à l'application &rarr;</a>
+      <a href="/index.html?app=1" class="nav-cta-btn">
+        <span>Accéder à l'application</span>
+        <span class="btn-arrow">&rarr;</span>
+      </a>
     </nav>
   </header>
 
@@ -232,8 +285,12 @@
       L'ingénierie financière au service de la gastronomie événementielle. Méthode TDABC, coûts unitaires et optimisation des marges en temps réel.
     </p>
 
-    <!-- UN SEUL BOUTON PRINCIPAL ÉPURÉ : DÉCLENCHE LA SIMULATION DOM -->
-    <div>
+    <!-- CALL TO ACTION DUO LUXE -->
+    <div class="hero-cta-wrapper">
+      <a href="/index.html?app=1" class="btn-hero-access">
+        <span>Accéder à l'application</span>
+        <span class="btn-arrow">&rarr;</span>
+      </a>
       <a href="/index.html?autodemo=1" class="btn-launch" id="btn-open-demo" aria-label="Voir la démonstration automatique">
         <svg viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z"/>
