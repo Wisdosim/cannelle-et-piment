@@ -307,6 +307,61 @@
         text-align: center;
       }
     }
+
+    /* ---- BADGE SIGNATURE ARCHITECTE (WATERMARK CORPORATE & DISCRET) ---- */
+    .architect-watermark {
+      position: fixed;
+      bottom: 20px;
+      right: 24px;
+      z-index: 95;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(229, 231, 235, 0.7);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+      font-size: 11.5px;
+      color: #64748b;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      pointer-events: auto;
+      user-select: none;
+      transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .architect-watermark:hover {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(209, 213, 219, 0.9);
+      color: #111827;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .architect-watermark .watermark-role {
+      font-weight: 400;
+      color: inherit;
+    }
+    .architect-watermark .watermark-sep {
+      opacity: 0.5;
+    }
+    .architect-watermark .watermark-author {
+      font-weight: 500;
+      color: #1e293b;
+      transition: color 300ms ease;
+    }
+    .architect-watermark:hover .watermark-author {
+      color: #000000;
+    }
+    @media (max-width: 768px) {
+      .architect-watermark {
+        bottom: 12px;
+        right: 12px;
+        font-size: 10.5px;
+        padding: 5px 11px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -360,6 +415,13 @@
       <span class="footer-secondary-text">Compétences Data &amp; Tech : Automatisation des reportings, traitement de données et requêtage d'API (Python / Node.js).</span>
     </footer>
   </main>
+
+  <!-- ========== SIGNATURE ARCHITECTE WATERMARK (DISCRÈTE & PREMIUM) ========== -->
+  <aside class="architect-watermark" aria-label="Signature architecte système">
+    <span class="watermark-role">Architecture &amp; Modélisation</span>
+    <span class="watermark-sep">&mdash;</span>
+    <span class="watermark-author">Nassim El Aziz</span>
+  </aside>
 
 </body>
 </html>
