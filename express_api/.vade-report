@@ -1,0 +1,87 @@
+# Vercel Web Analytics Installation Report
+
+## Summary
+Successfully installed and configured Vercel Web Analytics for the Cannelle et Piment Express.js application following the official Vercel documentation.
+
+## Changes Made
+
+### 1. Package Installation
+- **Added**: `@vercel/analytics` (v2.0.1) to dependencies
+- **Package Manager**: npm (detected from existing package-lock.json)
+- **Command executed**: `npm install @vercel/analytics`
+
+### 2. Analytics Integration
+Added Vercel Web Analytics script to both HTML pages:
+
+**Modified Files:**
+- `express_api/public/index.html` (line 1222)
+- `express_api/public/showcase.html` (line 376)
+
+**Implementation Method:**
+Used the CDN script tag approach as recommended for static HTML applications:
+```html
+<!-- Vercel Web Analytics -->
+<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+```
+
+The script was added just before the closing `</head>` tag in both files.
+
+### 3. Lockfile Updates
+- **Updated**: `package-lock.json` with new dependencies (102 packages added)
+
+## Implementation Rationale
+
+### Why CDN Script Tag Approach?
+1. **Project Architecture**: This is an Express.js server serving static HTML files without a build process or module bundler
+2. **Official Documentation**: Vercel's quickstart guide recommends the CDN script tag for HTML-based applications
+3. **Simplicity**: No build configuration changes required, works out-of-the-box
+4. **Performance**: The `defer` attribute ensures non-blocking page load
+
+### Alternative Considered
+The `@vercel/analytics` package supports an `inject()` function for module-based JavaScript, but this would require:
+- Setting up a bundler (webpack/rollup/vite)
+- Converting the static HTML to use ES modules
+- Adding a build step
+
+The CDN approach is more appropriate for this project's current architecture.
+
+## Verification Steps Completed
+
+✅ Package installed successfully  
+✅ Both HTML files updated with analytics script  
+✅ Build script executed successfully  
+✅ Server starts without errors  
+✅ All changes staged with git  
+✅ Lockfile properly updated and staged  
+
+## Next Steps for Deployment
+
+1. **Enable Web Analytics** in your Vercel dashboard:
+   - Go to your project settings
+   - Navigate to the Analytics section
+   - Enable Web Analytics
+
+2. **Deploy to Vercel**:
+   ```bash
+   vercel deploy
+   ```
+
+3. **Verify Tracking**:
+   - Visit your deployed application
+   - Open browser DevTools → Network tab
+   - Look for a Fetch/XHR request to `/_vercel/insights/view`
+   - This confirms analytics are tracking correctly
+
+## Files Modified
+
+- `package.json` - Added @vercel/analytics dependency
+- `package-lock.json` - Updated with new dependencies
+- `public/index.html` - Added analytics script
+- `public/showcase.html` - Added analytics script
+
+## Notes
+
+- The analytics script loads asynchronously (`defer` attribute) to avoid blocking page rendering
+- Analytics will only track on the Vercel production environment by default
+- No environment variables or additional configuration needed
+- The script automatically detects page views and sends analytics data
