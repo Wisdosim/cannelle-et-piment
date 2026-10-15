@@ -1,0 +1,71 @@
+# Vercel Web Analytics Installation Report
+
+## Summary
+Successfully installed and configured Vercel Web Analytics for the Cannelle et Piment Express.js project.
+
+## Changes Made
+
+### 1. Package Installation
+- **Added**: `@vercel/analytics@^2.0.1` to project dependencies
+- **Modified**: `express_api/package.json` - Added the @vercel/analytics package
+- **Modified**: `express_api/package-lock.json` - Updated lockfile with new dependencies
+
+### 2. Configuration Status
+The project already had Vercel Web Analytics scripts properly configured in both HTML files:
+- `express_api/public/index.html` - Analytics script present at line 2713
+- `express_api/public/showcase.html` - Analytics script present at line 441
+
+Both files include:
+```html
+<!-- Vercel Web Analytics -->
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+```
+
+## Implementation Details
+
+### Framework: Express.js (Static HTML Pages)
+This is an Express.js backend API that serves static HTML pages from the `public/` directory. According to the official Vercel documentation, the HTML/static site approach is the correct implementation method.
+
+### Analytics Integration Method
+- **Script Injection**: Using Vercel's native `/_vercel/insights/script.js` path
+- **Global Function**: Initialized `window.va` function for potential event tracking
+- **Placement**: Scripts added before closing `</body>` tag in both HTML files
+
+### Documentation Reference
+Installation followed the latest Vercel Analytics Quickstart guide:
+- https://vercel.com/docs/analytics/quickstart
+- https://vercel.com/docs/analytics/package
+
+## Verification
+
+### Build Status
+✅ Build completed successfully: `npm run build` passed
+
+### Server Status  
+✅ Server starts correctly: Application runs on http://localhost:3000
+
+### Tests & Linter
+- No test suite configured in project
+- No linter configured in project
+
+## Next Steps for Deployment
+
+To enable analytics data collection:
+1. Deploy the application to Vercel
+2. Enable Web Analytics in the Vercel dashboard for this project
+3. Analytics will automatically start tracking page views on:
+   - `/` (Landing page - index.html)
+   - `/showcase` (Showcase page - showcase.html)
+   - All API endpoints will be tracked as well
+
+## Files Modified
+- express_api/package.json (added @vercel/analytics dependency)
+- express_api/package-lock.json (lockfile update)
+
+## Notes
+- The analytics scripts were already present in the HTML files prior to this installation
+- The package installation ensures the correct version is tracked and available if programmatic usage is needed in the future
+- The implementation follows Vercel's best practices for static HTML pages served by Express.js
